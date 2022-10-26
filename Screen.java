@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class Screen extends JPanel{
+public class Screen extends JPanel implements ActionListener{
     int p;
     int q; 
     private JTextField enterP;
@@ -21,21 +21,19 @@ public class Screen extends JPanel{
         setLayout(null);
         setFocusable(true);
 
-        enterP(null);
 		enterP = new JTextField();
 		enterP.setBounds(345, 150, 150, 30);
 		add(enterP);
 
-        enterQ(null);
 		enterQ = new JTextField();
 		enterQ.setBounds(345, 150, 150, 30);
 		add(enterQ);
 
         addPQValues = new JButton();
 		addPQValues.setBounds(250, 112, 150, 30);
-		addPQValues.setText("Binary Search");
+		addPQValues.setText("add p/q values");
+        addPQValues.addActionListener(this);
 		add(addPQValues);
-		addPQValues.addActionListener(this);
     }
 
     @Override
