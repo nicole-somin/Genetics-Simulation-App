@@ -53,7 +53,7 @@ public class Screen extends JPanel{
     }
 
     public void actionPerformed(ActionEvent e ){
-
+        
         repaint();
     }  
 }
