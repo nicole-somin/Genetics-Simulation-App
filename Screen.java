@@ -15,6 +15,8 @@ public class Screen extends JPanel implements ActionListener{
     int q; 
     private JTextField enterP;
     private JTextField enterQ;
+    private JTextField enterPopSize;
+    private JButton addPopSize;
     private JButton addPQValues;	
     ArrayList<Individual> population = new ArrayList<Individual>();
     public Screen(){
@@ -26,14 +28,24 @@ public class Screen extends JPanel implements ActionListener{
 		add(enterP);
 
 		enterQ = new JTextField();
-		enterQ.setBounds(345, 150, 150, 30);
+		enterQ.setBounds(445, 150, 150, 30);
 		add(enterQ);
+
+        enterPopSize = new JTextField();
+        enterPopSize.setBounds(545, 150, 150, 30);
+		add(enterPopSize);
 
         addPQValues = new JButton();
 		addPQValues.setBounds(250, 112, 150, 30);
 		addPQValues.setText("add p/q values");
         addPQValues.addActionListener(this);
 		add(addPQValues);
+
+        addPopSize = new JButton();
+		addPopSize.setBounds(350, 112, 150, 30);
+		addPopSize.setText("set population size");
+        addPopSize.addActionListener(this);
+		add(addPopSize);
     }
 
     @Override
@@ -51,7 +63,14 @@ public class Screen extends JPanel implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent e ){
-        
+        p = Integer.parseInt(enterP.getText());
+        q = Integer.parseInt(enterQ.getText());
+        for(int i=0; i<enterPopSize.getText()*p){
+            population.add(new Individual(p,p));
+        }
+        for(int i=0; i<enterPopSize.getText()*q){
+            population.add(new Individual(q,q));
+        }
         repaint();
     }  
 }
