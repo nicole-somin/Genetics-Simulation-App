@@ -10,11 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Screen extends JPanel{
-    int p;
-    int q;
-
+    
     public Screen(){
         setLayout(null);
+
         setFocusable(true);
     }
 
