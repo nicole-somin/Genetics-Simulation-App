@@ -13,11 +13,29 @@ import java.util.ArrayList;
 public class Screen extends JPanel{
     int p;
     int q; 
-
+    private JTextField enterP;
+    private JTextField enterQ;
+    private JButton addPQValues;	
     ArrayList<Individual> population = new ArrayList<Individual>();
     public Screen(){
         setLayout(null);
         setFocusable(true);
+
+        enterP(null);
+		enterP = new JTextField();
+		enterP.setBounds(345, 150, 150, 30);
+		add(enterP);
+
+        enterQ(null);
+		enterQ = new JTextField();
+		enterQ.setBounds(345, 150, 150, 30);
+		add(enterQ);
+
+        addPQValues = new JButton();
+		addPQValues.setBounds(250, 112, 150, 30);
+		addPQValues.setText("Binary Search");
+		add(addPQValues);
+		addPQValues.addActionListener(this);
     }
 
     @Override
@@ -29,7 +47,11 @@ public class Screen extends JPanel{
 	public void paintComponent(Graphics g){
     }
 
-    public void actionPerformed(ActionEvent e ){
+    public void reproduce(){
 
+    }
+
+    public void actionPerformed(ActionEvent e ){
+        
     }
 }
