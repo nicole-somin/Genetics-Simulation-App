@@ -45,6 +45,7 @@ public class Screen extends JPanel{
 
     @Override
 	public void paintComponent(Graphics g){
+<<<<<<< Updated upstream
     }
 
     public void reproduce(){
@@ -53,5 +54,14 @@ public class Screen extends JPanel{
 
     public void actionPerformed(ActionEvent e ){
         
+=======
+        super.paintComponent(g);
+
+    }
+
+    public void actionPerformed(ActionEvent e){
+
+        repaint();
+>>>>>>> Stashed changes
     }
 }
