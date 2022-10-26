@@ -8,14 +8,15 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class Screen extends JPanel{
     int p;
     int q; 
-    
+
+    ArrayList<Individual> population = new ArrayList<Individual>();
     public Screen(){
         setLayout(null);
-
         setFocusable(true);
     }
 
@@ -26,6 +27,9 @@ public class Screen extends JPanel{
 
     @Override
 	public void paintComponent(Graphics g){
-        
+    }
+
+    public void actionPerformed(ActionEvent e ){
+
     }
 }
