@@ -1,9 +1,9 @@
 public class Individual {
-    int p, q;
+    int alleleOne, alleleTwo;
 
-    public Individual(int p, int q){
-        this.p = p;
-        this.q = q;
+    public Individual(int alleleOne, int alleleTwo){
+        this.alleleOne = alleleOne;
+        this.alleleTwo = alleleTwo;
     }
 
 }
