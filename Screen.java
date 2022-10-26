@@ -9,7 +9,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Screen extends JPanel{
+public class Screen extends JPanel implements ActionListener{
     
     public Screen(){
         setLayout(null);
@@ -24,6 +24,11 @@ public class Screen extends JPanel{
 
     @Override
 	public void paintComponent(Graphics g){
-        
+
+    }
+
+    public void actionPerformed(ActionEvent e){
+
+        repaint();
     }
 }
