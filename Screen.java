@@ -11,51 +11,87 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Screen extends JPanel implements ActionListener{
-    int p;
-    int q; 
+    private double p;
+    private double q; 
+    private double recRat;
+    private double domRat;
+    private double hetRat;
+    private double recNum;
+    private double domNum;
+    private double hetNum;
+    private double popSize;
+    private int randDomNum = 0;
+    private int randRecNum = 0;
+    private int randHetNum = 0;
+    private boolean valsSet = false;
     private JTextField enterP;
     private JTextField enterQ;
     private JTextField enterPopSize;
-    private JButton addPopSize;
-    private JButton addPQValues;	
-    ArrayList<Individual> population = new ArrayList<Individual>();
+    private JButton enter;	
+    ArrayList<Integer> population = new ArrayList<Integer>();
     public Screen(){
         setLayout(null);
         setFocusable(true);
 
 		enterP = new JTextField();
-		enterP.setBounds(345, 150, 150, 30);
+		enterP.setBounds(10, 135, 150, 30);
 		add(enterP);
 
 		enterQ = new JTextField();
-		enterQ.setBounds(445, 150, 150, 30);
+		enterQ.setBounds(10, 195, 150, 30);
 		add(enterQ);
 
         enterPopSize = new JTextField();
-        enterPopSize.setBounds(545, 150, 150, 30);
+        enterPopSize.setBounds(10, 75, 150, 30);
 		add(enterPopSize);
 
-        addPQValues = new JButton();
-		addPQValues.setBounds(250, 112, 150, 30);
-		addPQValues.setText("add p/q values");
-        addPQValues.addActionListener(this);
-		add(addPQValues);
-
-        addPopSize = new JButton();
-		addPopSize.setBounds(350, 112, 150, 30);
-		addPopSize.setText("set population size");
-        addPopSize.addActionListener(this);
-		add(addPopSize);
+        enter = new JButton();
+		enter.setBounds(10, 15, 150, 30);
+		enter.setText("enter");
+        enter.addActionListener(this);
+		add(enter);
     }
 
     @Override
 	public Dimension getPreferredSize(){
-		return new Dimension(800,600);
+		return new Dimension(1100,600);
 	}
 
     @Override
 	public void paintComponent(Graphics g){
+        setLayout(null);
         super.paintComponent(g);
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, 1100, 600);
+        g.setColor(Color.BLACK);
+        g.drawString("Population Size:", 10, 66);
+        g.drawString("Frequency of the Dominant Allele:",10, 126);
+        g.drawString("Frequency of the Recessive Allele:",10, 186);
+        
+        if(valsSet == true){
+            //1 = dom, 2= rec
+            //1 =dom, 2= rec, 3=het
+            for(int i=0; i<popSize; i++){
+                int rand1 = (int)(Math.random()*10000);
+                int rand2 = (int)(Math.random()*10000);
+                if(population.get(rand1) == 1 && population.get(rand2)==1){
+                    randDomNum++;
+                } else if(population.get(rand1)==2 && population.get(rand2)==2){
+                    randRecNum++;
+                } else{
+                    randHetNum++;
+                }
+            }
+            g.drawString("Ratio of Homozygous Dominant Individuals: " + Double.toString(domRat),500, 50);
+            g.drawString("Ratio of Homozygous Recessive Individuals: " + Double.toString(recRat),500, 75);
+            g.drawString("Ratio of Heterozygous Individuals: " + Double.toString(hetRat),500, 100);
+            g.drawString("Predicted Number of Homozygous Dominant Individuals: " + Double.toString(domNum),500, 125);
+            g.drawString("Predicted Number of Homozygous Recessive Individuals: " + Double.toString(recNum),500, 150);
+            g.drawString("Predicted Number of Heterozygous Individuals: " + Double.toString(hetNum),500, 175);
+            g.drawString("Predicted Number of Homozygous Dominant Individuals by Trial: : " + Integer.toString(randDomNum),500, 200);
+            g.drawString("Predicted Number of Homozygous Recessive Individuals by Trial: : " + Integer.toString(randRecNum),500, 225);
+            g.drawString("Number of Heterozygous Individuals by Trial: " + Integer.toString(randHetNum),500, 250);
+        }
     }
 
     public void reproduce(){
@@ -63,15 +99,26 @@ public class Screen extends JPanel implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent e ){
-        if(e.getSource() == addPQValues){
-            p = Integer.parseInt(enterP.getText());
-            q = Integer.parseInt(enterQ.getText());
-            for(int i=0; i<Integer.parseInt(enterPopSize.getText())*p;i++){
-                population.add(new Individual(p,p));
+        if(e.getSource() == enter){
+            p = Double.parseDouble(enterP.getText());
+            q =  Double.parseDouble(enterQ.getText());
+            popSize =  Double.parseDouble(enterPopSize.getText());
+            for(int i=0; i<10000*p;i++){
+                population.add(1);
             }
-            for(int i=0; i<Integer.parseInt(enterPopSize.getText())*q;i++){
-                population.add(new Individual(q,q));
+            for(int i=0; i<10000*q;i++){
+                population.add(2);
             }
+            domRat = p*p;
+            recRat = q*q;
+            hetRat = 2*p*q;
+            domNum = domRat*popSize;
+            recNum = recRat*popSize;
+            hetNum = hetRat*popSize;
+            randRecNum = 0;
+            randDomNum=0;
+            randHetNum=0;
+            valsSet = true;
         } 
        repaint();
     }  
