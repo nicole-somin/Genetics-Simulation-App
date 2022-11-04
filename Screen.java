@@ -59,18 +59,20 @@ public class Screen extends JPanel implements ActionListener{
     }
 
     public void reproduce(){
-
+        
     }
 
     public void actionPerformed(ActionEvent e ){
-        p = Integer.parseInt(enterP.getText());
-        q = Integer.parseInt(enterQ.getText());
-        for(int i=0; i<enterPopSize.getText()*p){
-            population.add(new Individual(p,p));
-        }
-        for(int i=0; i<enterPopSize.getText()*q){
-            population.add(new Individual(q,q));
-        }
-        repaint();
+        if(e.getSource() == addPQValues){
+            p = Integer.parseInt(enterP.getText());
+            q = Integer.parseInt(enterQ.getText());
+            for(int i=0; i<Integer.parseInt(enterPopSize.getText())*p;i++){
+                population.add(new Individual(p,p));
+            }
+            for(int i=0; i<Integer.parseInt(enterPopSize.getText())*q;i++){
+                population.add(new Individual(q,q));
+            }
+        } 
+       repaint();
     }  
 }
