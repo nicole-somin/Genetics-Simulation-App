@@ -27,7 +27,9 @@ public class Screen extends JPanel implements ActionListener{
     private JTextField enterP;
     private JTextField enterQ;
     private JTextField enterPopSize;
-    private JButton enter;	
+    private JButton enter;
+    private JButton noReplace;	
+    private String sampleType = "";
     ArrayList<Integer> population = new ArrayList<Integer>();
     public Screen(){
         setLayout(null);
@@ -46,10 +48,16 @@ public class Screen extends JPanel implements ActionListener{
 		add(enterPopSize);
 
         enter = new JButton();
-		enter.setBounds(10, 15, 150, 30);
-		enter.setText("enter");
+		enter.setBounds(10, 15, 250, 30);
+		enter.setText("sampling with replacement");
         enter.addActionListener(this);
 		add(enter);
+
+        noReplace = new JButton();
+		noReplace.setBounds(280, 15, 250, 30);
+		noReplace.setText("sampling without replacement");
+        noReplace.addActionListener(this);
+		add(noReplace);
     }
 
     @Override
@@ -71,15 +79,34 @@ public class Screen extends JPanel implements ActionListener{
         if(valsSet == true){
             //1 = dom, 2= rec
             //1 =dom, 2= rec, 3=het
-            for(int i=0; i<popSize; i++){
-                int rand1 = (int)(Math.random()*10000);
-                int rand2 = (int)(Math.random()*10000);
-                if(population.get(rand1) == 1 && population.get(rand2)==1){
-                    randDomNum++;
-                } else if(population.get(rand1)==2 && population.get(rand2)==2){
-                    randRecNum++;
-                } else{
-                    randHetNum++;
+            if(sampleType == "replace"){
+                for(int i=0; i<popSize; i++){
+                    int rand1 = (int)(Math.random()*population.size());
+                    int rand2 = (int)(Math.random()*population.size()); 
+                    while(rand1==rand2){
+                        rand2 =(int)(Math.random()*population.size());
+                    }
+                    if(population.get(rand1) == 1 && population.get(rand2)==1){
+                        randDomNum++;
+                    } else if(population.get(rand1)==2 && population.get(rand2)==2){
+                        randRecNum++;
+                    } else{
+                        randHetNum++;
+                    }
+                }
+            } else if(sampleType == "noReplace"){
+                for(int i=0; i<popSize; i++){
+                    int rand1 = (int)(Math.random()*population.size());
+                    int allele1 = population.remove(rand1);
+                    int rand2 = (int)(Math.random()*population.size());
+                    int allele2 = population.remove(rand2);
+                    if(allele1 == 1 && allele2==1){
+                        randDomNum++;
+                    } else if(allele1==2 && allele2==2){
+                        randRecNum++;
+                    } else{
+                        randHetNum++;
+                    }
                 }
             }
             g.drawString("Ratio of Homozygous Dominant Individuals: " + Double.toString(domRat),500, 50);
@@ -103,10 +130,10 @@ public class Screen extends JPanel implements ActionListener{
             p = Double.parseDouble(enterP.getText());
             q =  Double.parseDouble(enterQ.getText());
             popSize =  Double.parseDouble(enterPopSize.getText());
-            for(int i=0; i<10000*p;i++){
+            for(int i=0; i<100000*p;i++){
                 population.add(1);
             }
-            for(int i=0; i<10000*q;i++){
+            for(int i=0; i<100000*q;i++){
                 population.add(2);
             }
             domRat = p*p;
@@ -119,7 +146,29 @@ public class Screen extends JPanel implements ActionListener{
             randDomNum=0;
             randHetNum=0;
             valsSet = true;
-        } 
+            sampleType = "replace";
+        } else if(e.getSource()==noReplace){
+            p = Double.parseDouble(enterP.getText());
+            q =  Double.parseDouble(enterQ.getText());
+            popSize =  Double.parseDouble(enterPopSize.getText());
+            for(int i=0; i<100000*p;i++){
+                population.add(1);
+            }
+            for(int i=0; i<100000*q;i++){
+                population.add(2);
+            }
+            domRat = p*p;
+            recRat = q*q;
+            hetRat = 2*p*q;
+            domNum = domRat*popSize;
+            recNum = recRat*popSize;
+            hetNum = hetRat*popSize;
+            randRecNum = 0;
+            randDomNum=0;
+            randHetNum=0;
+            valsSet = true;
+            sampleType = "noReplace";
+        }
        repaint();
     }  
 }
