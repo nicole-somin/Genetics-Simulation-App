@@ -48,13 +48,13 @@ public class Screen extends JPanel implements ActionListener{
 		add(enterPopSize);
 
         enter = new JButton();
-		enter.setBounds(10, 15, 250, 30);
+		enter.setBounds(10, 15, 200, 30);
 		enter.setText("sampling with replacement");
         enter.addActionListener(this);
 		add(enter);
 
         noReplace = new JButton();
-		noReplace.setBounds(280, 15, 250, 30);
+		noReplace.setBounds(230, 15, 220, 30);
 		noReplace.setText("sampling without replacement");
         noReplace.addActionListener(this);
 		add(noReplace);
@@ -130,10 +130,10 @@ public class Screen extends JPanel implements ActionListener{
             p = Double.parseDouble(enterP.getText());
             q =  Double.parseDouble(enterQ.getText());
             popSize =  Double.parseDouble(enterPopSize.getText());
-            for(int i=0; i<100000*p;i++){
+            for(int i=0; i<popSize*p*2;i++){
                 population.add(1);
             }
-            for(int i=0; i<100000*q;i++){
+            for(int i=0; i<popSize*q*2;i++){
                 population.add(2);
             }
             domRat = p*p;
@@ -151,10 +151,10 @@ public class Screen extends JPanel implements ActionListener{
             p = Double.parseDouble(enterP.getText());
             q =  Double.parseDouble(enterQ.getText());
             popSize =  Double.parseDouble(enterPopSize.getText());
-            for(int i=0; i<100000*p;i++){
+            for(int i=0; i<popSize*p*2;i++){
                 population.add(1);
             }
-            for(int i=0; i<100000*q;i++){
+            for(int i=0; i<popSize*q*2;i++){
                 population.add(2);
             }
             domRat = p*p;
