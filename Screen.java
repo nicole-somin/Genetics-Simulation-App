@@ -8,9 +8,11 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-public class Screen extends JPanel implements ActionListener{
+public class Screen extends JPanel implements ActionListener, MouseListener{
     private double p;
     private double q; 
     private double recRat;
@@ -25,7 +27,10 @@ public class Screen extends JPanel implements ActionListener{
     private int randHetNum = 0;
     private int sampleNum = 0;
     private boolean valsSet = false;
-    private boolean 
+    private boolean selecDom = false;
+    private boolean selecRec = false;
+    private boolean selecHet = false;
+    private boolean useEnVals = true;
     private JTextField enterP;
     private JTextField enterQ;
     private JTextField enterPopSize;
@@ -36,6 +41,8 @@ public class Screen extends JPanel implements ActionListener{
     private JButton noReplace;	
     private String sampleType = "";
     ArrayList<Integer> population = new ArrayList<Integer>();
+    ArrayList<Integer> individuals = new ArrayList<Integer>();
+    ArrayList<Integer> population2 = new ArrayList<Integer>();
     public Screen(){
         setLayout(null);
         setFocusable(true);
@@ -77,6 +84,8 @@ public class Screen extends JPanel implements ActionListener{
 		noReplace.setText("sampling without replacement");
         noReplace.addActionListener(this);
 		add(noReplace);
+
+        addMouseListener(this);
     }
 
     @Override
@@ -98,7 +107,7 @@ public class Screen extends JPanel implements ActionListener{
         g.drawString("Frequency of individuals you want to kill:",470, 66 );
         g.setColor(new Color(100,100,100));
         g.fillRect(473, 126, 90, 25);
-        g.setColor(new Color(44, 99, 52));
+        g.setColor(new Color(62, 140, 73));
         if(selecRec == true){
             g.fillRect(473, 126, 30, 25);
         } 
@@ -114,7 +123,18 @@ public class Screen extends JPanel implements ActionListener{
         g.drawString("AA", 510,141);
         g.drawString("Aa", 540,141);
 
-        
+        g.setColor(new Color(100,100,100));
+        g.fillRect(10, 250, 150, 25);
+        g.setColor(new Color(62, 140, 73));
+        if(useEnVals){
+            g.fillRect(10, 250, 55,25);
+        } else {
+            g.fillRect(65, 250, 95,25);
+        }
+        g.setColor(Color.BLACK);
+        g.drawString ("Select whether you want to sample with entered values or the new values after natural selection", 10, 245);
+        g.drawString("entered", 16, 265);
+        g.drawString("natural selection", 69, 265);
         
         if(valsSet == true){
             //1 = dom, 2= rec
@@ -151,6 +171,22 @@ public class Screen extends JPanel implements ActionListener{
                     }
                 }
             }
+
+            for(int i=0; i<popSize; i++){
+                int rand1 = (int)(Math.random()*population.size());
+                int rand2 = (int)(Math.random()*population.size()); 
+                while(rand1==rand2){
+                    rand2 =(int)(Math.random()*population.size());
+                }
+                if(population.get(rand1) == 1 && population.get(rand2)==1){
+                    individuals.add(1);
+                } else if(population.get(rand1)==2 && population.get(rand2)==2){
+                    individuals.add(2);
+                } else{
+                    individuals.add(3);
+                }
+            }
+            
             g.drawString("Ratio of Homozygous Dominant Individuals: " + Double.toString(domRat),500, 50);
             g.drawString("Ratio of Homozygous Recessive Individuals: " + Double.toString(recRat),500, 75);
             g.drawString("Ratio of Heterozygous Individuals: " + Double.toString(hetRat),500, 100);
@@ -212,9 +248,81 @@ public class Screen extends JPanel implements ActionListener{
             randHetNum=0;
             valsSet = true;
             sampleType = "noReplace";
-        } else if (e.getSource == enterNatSelecVal()){
-
+        } else if (e.getSource == natSelc()){
+            int selecRat = Integer.parseInt(enterNatSelecVal.getText());
+            if(selecDom == true){
+                int selecNum = selecRat*randDomNum;
+                for(int i=0; i<individuals.size(); i++){
+                    if(individuals.get(i).equals(1)&&selecNum>0){
+                        individuals.remove(i);
+                    }
+                }
+            } else if (selecRec == true){
+                int selecNum = selecRat*randRecNum;
+                for(int i=0; i<individuals.size(); i++){
+                    if(individuals.get(i).equals(1)&&selecNum>0){
+                        individuals.remove(i);
+                    }
+                }
+            } else if (selecHet == true){
+                int selecNum = selecRat*randHetNum;
+                for(int i=0; i<individuals.size(); i++){
+                    if(individualsa.get(i).equals(1)&&selecNum>0){
+                        individuals.remove(i);
+                    }
+                }
+            }
+            for(int i=0;i<individuals.size();i++){
+                if(individuals.get(i).equals(1)){
+                    population2.add(1);
+                    population2.add(1);
+                } else if(individuals.get(i).equals(2)){
+                    population2.add(2);
+                    population2.add(2);
+                } else if(individuals.get(i).equals(3)){
+                    population2.add(1);
+                    population2.add(2);
+                }
+            }
         }
        repaint();
     }  
+
+	public void mouseReleased(MouseEvent e) {}
+	public void mouseEntered(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {}
+	public void mouseClicked(MouseEvent e) {}
+	public void mousePressed(MouseEvent e){
+       // System.out.println("hi")
+        if(e.getY()>=126&&e.getY()<=151){
+            if(e.getX()>=470&&e.getX()<=500){
+                if(selecRec){
+                    selecRec =false;
+                } else {
+                    selecRec = true;
+                }
+            } else if (e.getX()>=500&&e.getX()<=530){
+                if(selecDom){
+                    selecDom = false;
+                }else {
+                    selecDom = true;
+                }
+            } else if (e.getX()>=530&&e.getX()<=560){
+                if(selecHet){
+                    selecHet = false;
+                } else{
+                    selecHet = true;
+                }
+            }
+        }
+
+        if(e.getY()>=250&&e.getY()<=275){
+            if(e.getX()>=10&&e.getX()<=65){
+                useEnVals = true;
+            } else if (e.getX()>=65&&e.getX()<=160){
+                useEnVals = false;
+            } 
+        }
+        repaint();
+    }
 }
