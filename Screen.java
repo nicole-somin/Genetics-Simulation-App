@@ -26,11 +26,15 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private int randRecNum = 0;
     private int randHetNum = 0;
     private int sampleNum = 0;
+    private double domAllNum = 0;
+    private double recAllNum = 0;
     private boolean valsSet = false;
     private boolean selecDom = false;
     private boolean selecRec = false;
     private boolean selecHet = false;
     private boolean useEnVals = true;
+    private boolean justNatSelected = false;
+    private boolean justScreenPressed = false;
     private JTextField enterP;
     private JTextField enterQ;
     private JTextField enterPopSize;
@@ -137,65 +141,69 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         g.drawString("natural selection", 69, 265);
         
         if(valsSet == true){
-            //1 = dom, 2= rec
-            //1 =dom, 2= rec, 3=het
-            if(sampleType == "replace"){
-                for(int i=0; i<sampleNum; i++){
+            if(justScreenPressed == false){
+                //1 = dom, 2= rec
+                //1 =dom, 2= rec, 3=het
+                if(sampleType == "replace"){
+                    for(int i=0; i<sampleNum; i++){
+                        int rand1 = (int)(Math.random()*population.size());
+                        int rand2 = (int)(Math.random()*population.size()); 
+                        while(rand1==rand2){
+                            rand2 =(int)(Math.random()*population.size());
+                        }
+                        if(population.get(rand1) == 1 && population.get(rand2)==1){
+                            randDomNum++;
+                        } else if(population.get(rand1)==2 && population.get(rand2)==2){
+                            randRecNum++;
+                        } else{
+                            randHetNum++;
+                        }
+                    }
+                } else if(sampleType == "noReplace"){
+                    for(int i=0; i<sampleNum; i++){
+                        int rand1 = (int)(Math.random()*population.size());
+                        int allele1 = population.remove(rand1);
+                        int rand2 = (int)(Math.random()*population.size());
+                        int allele2 = population.remove(rand2);
+                        if(allele1 == 1 && allele2==1){
+                            randDomNum++;
+                        } else if(allele1==2 && allele2==2){
+                            randRecNum++;
+                        } else{
+                            randHetNum++;
+                        }
+                    }
+                }
+
+                /*for(int i=0; i<popSize; i++){
                     int rand1 = (int)(Math.random()*population.size());
                     int rand2 = (int)(Math.random()*population.size()); 
                     while(rand1==rand2){
                         rand2 =(int)(Math.random()*population.size());
                     }
                     if(population.get(rand1) == 1 && population.get(rand2)==1){
-                        randDomNum++;
+                        individuals.add(1);
                     } else if(population.get(rand1)==2 && population.get(rand2)==2){
-                        randRecNum++;
+                        individuals.add(2);
                     } else{
-                        randHetNum++;
+                        individuals.add(3);
                     }
-                }
-            } else if(sampleType == "noReplace"){
-                System.out.println(population);
-                for(int i=0; i<sampleNum; i++){
-                    int rand1 = (int)(Math.random()*population.size());
-                    int allele1 = population.remove(rand1);
-                    int rand2 = (int)(Math.random()*population.size());
-                    int allele2 = population.remove(rand2);
-                    System.out.print(population.size()+ " ");
-                    if(allele1 == 1 && allele2==1){
-                        randDomNum++;
-                    } else if(allele1==2 && allele2==2){
-                        randRecNum++;
-                    } else{
-                        randHetNum++;
-                    }
-                }
+                }*/
             }
+            g.drawString("Ratio of Dominant Alleles: " + Double.toString(domAllNum),10, 0+300);
+            g.drawString("Ratio of Recessive Alleles: " + Double.toString(recAllNum),10, 25+300);
+            g.drawString("Ratio of Homozygous Dominant Individuals: " + Double.toString(domRat),10, 50+300);
+            g.drawString("Ratio of Homozygous Recessive Individuals: " + Double.toString(recRat),10, 75+300);
+            g.drawString("Ratio of Heterozygous Individuals: " + Double.toString(hetRat),10, 100+300);
+            g.drawString("Predicted Number of Homozygous Dominant Individuals: " + Double.toString(domNum),10, 125+300);
+            g.drawString("Predicted Number of Homozygous Recessive Individuals: " + Double.toString(recNum),10, 150+300);
+            g.drawString("Predicted Number of Heterozygous Individuals: " + Double.toString(hetNum),10, 175+300);
 
-            for(int i=0; i<popSize; i++){
-                int rand1 = (int)(Math.random()*population.size());
-                int rand2 = (int)(Math.random()*population.size()); 
-                while(rand1==rand2){
-                    rand2 =(int)(Math.random()*population.size());
-                }
-                if(population.get(rand1) == 1 && population.get(rand2)==1){
-                    individuals.add(1);
-                } else if(population.get(rand1)==2 && population.get(rand2)==2){
-                    individuals.add(2);
-                } else{
-                    individuals.add(3);
-                }
+            if(justNatSelected == false){
+                g.drawString("Sampled Number of Homozygous Dominant Individuals out of " + sampleNum + ": " + Integer.toString(randDomNum),10, 200+300);
+                g.drawString("Sampled Number of Homozygous Recessive Individuals " + sampleNum + ": " +Integer.toString(randRecNum),10, 225+300);
+                g.drawString("Sampled of Heterozygous Individuals " + sampleNum + ": " + Integer.toString(randHetNum),10, 250+300);
             }
-            
-            g.drawString("Ratio of Homozygous Dominant Individuals: " + Double.toString(domRat),500, 50);
-            g.drawString("Ratio of Homozygous Recessive Individuals: " + Double.toString(recRat),500, 75);
-            g.drawString("Ratio of Heterozygous Individuals: " + Double.toString(hetRat),500, 100);
-            g.drawString("Predicted Number of Homozygous Dominant Individuals: " + Double.toString(domNum),500, 125);
-            g.drawString("Predicted Number of Homozygous Recessive Individuals: " + Double.toString(recNum),500, 150);
-            g.drawString("Predicted Number of Heterozygous Individuals: " + Double.toString(hetNum),500, 175);
-            g.drawString("Sampled Number of Homozygous Dominant Individuals out of " + sampleNum + ": " + Integer.toString(randDomNum),500, 200);
-            g.drawString("Sampled Number of Homozygous Recessive Individuals " + sampleNum + ": " +Integer.toString(randRecNum),500, 225);
-            g.drawString("Sampled of Heterozygous Individuals " + sampleNum + ": " + Integer.toString(randHetNum),500, 250);
         }
     }
 
@@ -204,9 +212,12 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     }
 
     public void actionPerformed(ActionEvent e ){
+        justScreenPressed = false;
         if(e.getSource() == enter){
             p = Double.parseDouble(enterP.getText());
             q =  Double.parseDouble(enterQ.getText());
+            domAllNum = p;
+            recAllNum = q;
             popSize =  Double.parseDouble(enterPopSize.getText());
             sampleNum = Integer.parseInt(enterSampleNum.getText());
             for(int i=0; i<popSize*p;i++){
@@ -226,9 +237,12 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             randHetNum=0;
             valsSet = true;
             sampleType = "replace";
+            justNatSelected = false;
         } else if(e.getSource()==noReplace){
             p = Double.parseDouble(enterP.getText());
             q =  Double.parseDouble(enterQ.getText());
+            domAllNum = p;
+            recAllNum = q;
             popSize =  Double.parseDouble(enterPopSize.getText());
             sampleNum = Integer.parseInt(enterSampleNum.getText());
             for(int i=0; i<popSize*p*2;i++){
@@ -248,42 +262,92 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             randHetNum=0;
             valsSet = true;
             sampleType = "noReplace";
-        } else if (e.getSource == natSelc()){
-            int selecRat = Integer.parseInt(enterNatSelecVal.getText());
-            if(selecDom == true){
-                int selecNum = selecRat*randDomNum;
+            justNatSelected = false;
+        } else if (e.getSource() == natSelec){
+            for(int i=0;i<domNum; i++){
+                individuals.add(1);
+            }
+            for(int i=0;i<recNum; i++){
+                individuals.add(2);
+            }
+            for(int i=0;i<hetNum; i++){
+                individuals.add(3);
+            }
+            double selecRat = Double.parseDouble(enterNatSelecVal.getText());
+            if(selecDom){
+                int selecNum = (int)(selecRat*domNum);
                 for(int i=0; i<individuals.size(); i++){
                     if(individuals.get(i).equals(1)&&selecNum>0){
                         individuals.remove(i);
+                        i--;
+                        selecNum--;
                     }
                 }
-            } else if (selecRec == true){
-                int selecNum = selecRat*randRecNum;
+            } 
+            if (selecRec){
+                int selecNum = (int)(selecRat*recNum);
                 for(int i=0; i<individuals.size(); i++){
-                    if(individuals.get(i).equals(1)&&selecNum>0){
+                    if(individuals.get(i).equals(2)&&selecNum>0){
                         individuals.remove(i);
+                        i--;
+                        selecNum--;
                     }
                 }
-            } else if (selecHet == true){
-                int selecNum = selecRat*randHetNum;
+            } 
+            if (selecHet){
+                int selecNum = (int)(selecRat*hetNum);
                 for(int i=0; i<individuals.size(); i++){
-                    if(individualsa.get(i).equals(1)&&selecNum>0){
-                        individuals.remove(i);
+                    if(individuals.get(i).equals(3)){
+                        if(selecNum>0){
+                            individuals.remove(i);
+                            i--;
+                            selecNum--;
+                        }
                     }
                 }
             }
+            domNum = 0;
+            recNum = 0;
+            hetNum = 0;
             for(int i=0;i<individuals.size();i++){
                 if(individuals.get(i).equals(1)){
                     population2.add(1);
                     population2.add(1);
+                    domNum++;
                 } else if(individuals.get(i).equals(2)){
                     population2.add(2);
                     population2.add(2);
+                    recNum++;
                 } else if(individuals.get(i).equals(3)){
                     population2.add(1);
                     population2.add(2);
+                    hetNum++;
                 }
             }
+            double amt1 = 0;
+            double amt2 = 0;
+            for(int i=0; i<population2.size(); i++){
+                if(population2.get(i).equals(1)){
+                    amt1++;
+                    
+                } else{
+                    amt2++;
+                }
+            }
+            double p = amt1/population2.size();
+            double q = amt2/population2.size();
+            domAllNum = p;
+            recAllNum = q;
+            System.out.println(population2.size());
+            domRat = 1.0*domNum/individuals.size();
+            recRat = 1.0*recNum/individuals.size();
+            hetRat = 1.0*hetNum/individuals.size();
+            individuals = new ArrayList<Integer>();
+            randRecNum=0;
+            randDomNum=0;
+            randHetNum=0;
+            valsSet = true;
+            justNatSelected = true;
         }
        repaint();
     }  
@@ -307,7 +371,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 }else {
                     selecDom = true;
                 }
-            } else if (e.getX()>=530&&e.getX()<=560){
+            } else if (e.getX()>=530 && e.getX()<=560){
                 if(selecHet){
                     selecHet = false;
                 } else{
@@ -323,6 +387,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 useEnVals = false;
             } 
         }
+        justScreenPressed = true;
         repaint();
     }
 }
