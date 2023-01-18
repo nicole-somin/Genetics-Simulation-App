@@ -8,4 +8,12 @@ public class Individual {
         this.alleleTwo = alleleTwo;
     }
 
+    public int get1(){
+        return alleleOne;
+    }
+
+    public int get2(){
+        return alleleTwo;
+    }
+
 }
