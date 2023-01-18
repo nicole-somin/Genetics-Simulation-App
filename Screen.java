@@ -348,6 +348,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             }
         } else if (e.getSource() == natSelec){
             //determining the total number of each type of individual
+            System.out.println(hetRat);
             int totDom = (int)(popSize*domRat);
             int totHet = (int)(popSize*hetRat);
             int totRec = (int)(popSize*recRat);
@@ -364,8 +365,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             popSize = totDom + totHet+ totRec;
 
             domRat = 1.0*totDom/popSize;
-            recRat = 1.0*totHet/popSize;
-            hetRat = 1.0*totRec/popSize;
+            recRat = 1.0*totRec/popSize;
+            hetRat = 1.0*totHet/popSize;
             domNum = 0;
             recNum = 0;
             hetNum = 0;
