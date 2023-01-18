@@ -124,7 +124,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         g.drawString("Population Size:", 10, 66);
         g.drawString("Frequency of the Dominant Allele:",10, 126);
         g.drawString("Frequency of the Recessive Allele:",10, 186);
-        g.drawString("Number of individuals you want to sample:", 230, 66);
+        g.drawString("Number of individuals you're sampling:", 230, 66);
         g.drawString("Frequency of individuals you want to kill:",470, 66 );
         // select menus
         g.setColor(new Color(100,100,100));
@@ -250,19 +250,20 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             }
             
             //drawing on screen
-            g.drawString("Ratio of Dominant Alleles: " + Double.toString(p),10, 0+300);
-            g.drawString("Ratio of Recessive Alleles: " + Double.toString(q),10, 25+300);
-            g.drawString("Ratio of Homozygous Dominant Individuals: " + Double.toString(domRat),10, 50+300);
-            g.drawString("Ratio of Homozygous Recessive Individuals: " + Double.toString(recRat),10, 75+300);
-            g.drawString("Ratio of Heterozygous Individuals: " + Double.toString(hetRat),10, 100+300);
+            g.drawString("Population Size: " + String.valueOf(popSize), 10, 0+300);
+            g.drawString("Ratio of Dominant Alleles: " + Double.toString(p),10, 0+325);
+            g.drawString("Ratio of Recessive Alleles: " + Double.toString(q),10, 25+325);
+            g.drawString("Ratio of Homozygous Dominant Individuals: " + Double.toString(domRat),10, 50+325);
+            g.drawString("Ratio of Homozygous Recessive Individuals: " + Double.toString(recRat),10, 75+325);
+            g.drawString("Ratio of Heterozygous Individuals: " + Double.toString(hetRat),10, 100+325);
 
             if(justNatSelected == false){
-                g.drawString("Predicted Number of Homozygous Dominant Individuals: " + Double.toString((int)domNum),10, 125+300);
-                g.drawString("Predicted Number of Homozygous Recessive Individuals: " + Double.toString((int)recNum),10, 150+300);
-                g.drawString("Predicted Number of Heterozygous Individuals: " + Double.toString((int)hetNum),10, 175+300);
-                g.drawString("Sampled Number of Homozygous Dominant Individuals out of " + sampleNum + ": " + Integer.toString(randDomNum),10, 200+300);
-                g.drawString("Sampled Number of Homozygous Recessive Individuals " + sampleNum + ": " +Integer.toString(randRecNum),10, 225+300);
-                g.drawString("Sampled of Heterozygous Individuals " + sampleNum + ": " + Integer.toString(randHetNum),10, 250+300);
+                g.drawString("Predicted Number of Homozygous Dominant Individuals: " + Double.toString((int)domNum),10, 125+325);
+                g.drawString("Predicted Number of Homozygous Recessive Individuals: " + Double.toString((int)recNum),10, 150+325);
+                g.drawString("Predicted Number of Heterozygous Individuals: " + Double.toString((int)hetNum),10, 175+325);
+                g.drawString("Sampled Number of Homozygous Dominant Individuals out of " + sampleNum + ": " + Integer.toString(randDomNum),10, 200+325);
+                g.drawString("Sampled Number of Homozygous Recessive Individuals " + sampleNum + ": " +Integer.toString(randRecNum),10, 225+325);
+                g.drawString("Sampled of Heterozygous Individuals " + sampleNum + ": " + Integer.toString(randHetNum),10, 250+325);
             }
             
         }
