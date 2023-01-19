@@ -16,4 +16,12 @@ public class Individual {
         return alleleTwo;
     }
 
+    public int returnRandAl(){
+        int rand = (int)(Math.random()*2);
+        if(rand==0){
+            return alleleOne;
+        }
+        return alleleTwo;
+    }
+
 }
