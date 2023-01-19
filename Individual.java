@@ -24,4 +24,13 @@ public class Individual {
         return alleleTwo;
     }
 
+    public Integer getType(){
+        if(alleleOne==1&&alleleTwo==1){
+            return 1;
+        } else if (alleleOne==2&&alleleTwo==2){
+            return 2;
+        }
+        return 3;
+    }
+
 }

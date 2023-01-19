@@ -46,6 +46,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private boolean useEnVals = true;
     //determines whether or not you just natural selected (for display purposes)
     private boolean showPart2 = false;
+    private int startSpot=0;
     //makes sure that when you select from the menus it doesn't re-sample
     private JTextField enterP;
     private JTextField enterQ;
@@ -193,32 +194,71 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     }
 
     public void reproduce(){
+        ArrayList<Individual> tempArray;
         if(useEnVals==true){
-            ArrayList<Individual> tempArray = new ArrayList<Individual>();
+            tempArray = new ArrayList<Individual>();
             for(int i=0;i<individuals.size();i++){
                 tempArray.add(individuals.get(i));
             }
+            if(individuals.size()%2==1){
+                startSpot=1;
+            }
         } else{
-            ArrayList<Individual> tempArray = new ArrayList<Individual>();
+            tempArray = new ArrayList<Individual>();
             for(int i=0;i<individuals2.size();i++){
-                tempArray.add(indivinduals2.get(i));
+                tempArray.add(individuals2.get(i));
+            }
+            if(individuals2.size()%2==1){
+                startSpot=1;
             }
         }
-        for(int i=startSpot; i<tempArray.size();i++){
-            int rand1 = (int)(Math.random()*tempArray.size());
-            int rand2 = (int)(Math.random()*tempArray.size());
-            while(rand1==rand2){
-                rand2 = (int)(Math.random()*tempArray.size());
+        for(int i=startSpot; i<tempArray.size();i+=2){
+            if(tempArray.size()>1){
+                int rand1 = (int)(Math.random()*tempArray.size());
+                int rand2 = (int)(Math.random()*(tempArray.size()-1));
+                while(rand1==rand2){
+                    rand1 = (int)(Math.random()*tempArray.size());
+                }
+                if(useEnVals){
+                    individuals.add(new Individual(tempArray.get(rand1).returnRandAl(),tempArray.get(rand2).returnRandAl()));
+                } else{
+                    individuals2.add(new Individual(tempArray.get(rand1).returnRandAl(),tempArray.get(rand2).returnRandAl()));
+                }
+                tempArray.remove(rand1);
+                tempArray.remove(rand2);
+                i-=2;
+                System.out.println(tempArray.size());
             }
-            if(useEnvals){
-                individuals.add(new Individual(tempArray.get(rand1).returnRandAl(),tempArray.get(rand2).getRandAl()));
+        }
+        calculateVals();
+        repaint();
+    }
+
+    public void calculateVals(){
+        ArrayList<Individual> tempArray = new ArrayList<Individual>();
+        if(useEnVals){
+            tempArray = individuals;
+        } else{
+            tempArray = individuals2;
+        }
+        popSize = tempArray.size();
+        totDom = 0;
+        totRec = 0;
+        totHet = 0;
+        for(int i=0;i<tempArray.size();i++){
+            if(tempArray.get(i).getType()==1){
+                totDom++;
+            } else if (tempArray.get(i).getType()==2){
+                totRec++;
             } else{
-                individuals2.add(new Individual(tempArray.get(rand1).returnRandAl(),tempArray.get(rand2).getRandAl()));
+                totHet++;
             }
-            tempArray.remove(rand1);
-            tempArray.remove(rand2);
-            i--;
         }
+        domRat = (1.0*totDom)/popSize;
+        recRat = (1.0*totRec)/popSize;
+        hetRat = (1.0*totHet)/popSize;
+        p = (2.0*totDom+totHet)/(popSize*2);
+        q = (2.0*totRec+totHet)/(popSize*2);
     }
 
     public void actionPerformed(ActionEvent e ){
@@ -246,12 +286,10 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 }
                 //so that sampling will happen
                 valsSet = true;
-                sampleType = "replace";
                 showPart2 = false;
             } else{
                 sampleNum = Integer.parseInt(enterSampleNum.getText());
                 //predicting
-                sampleType = "replace";
                 valsSet = false; 
                 showPart2 = false;
             }
