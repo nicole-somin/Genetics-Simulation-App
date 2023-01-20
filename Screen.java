@@ -42,8 +42,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private int totDom;
     private int totRec;
     private int totHet;
-    //determines whether you are using the entered values (true), or the values from natural selection (false)
-    private boolean useEnVals = true;
     //determines whether or not you just natural selected (for display purposes)
     private boolean showPart2 = false;
     private int startSpot=0;
@@ -63,8 +61,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private JButton reproduce;
     //individuals is created during natural selection & filled with individuals based on the current information in population (1-dom, 2-rec, 3-het)
     ArrayList<Individual> individuals = new ArrayList<Individual>();
-    // individuals2 is created with individuals during  natural selection
-    ArrayList<Individual> individuals2 = new ArrayList<Individual>();
     public Screen(){
         setLayout(null);
         setFocusable(true);
@@ -158,19 +154,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         g.drawString("AA", 510,141);
         g.drawString("Aa", 540,141);
 
-        g.setColor(new Color(100,100,100));
-        g.fillRect(10, 250, 150, 25);
-        g.setColor(new Color(62, 140, 73));
-        if(useEnVals){
-            g.fillRect(10, 250, 55,25);
-        } else {
-            g.fillRect(65, 250, 95,25);
-        }
-        g.setColor(Color.BLACK);
-        g.drawString ("Select whether you want to sample with entered values or the new values after natural selection", 10, 245);
-        g.drawString("entered", 16, 265);
-        g.drawString("natural selection", 69, 265);
-
         // does the sampling
         if(valsSet == true){     
             //drawing on screen
@@ -195,23 +178,14 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
     public void reproduce(){
         ArrayList<Individual> tempArray;
-        if(useEnVals==true){
-            tempArray = new ArrayList<Individual>();
-            for(int i=0;i<individuals.size();i++){
-                tempArray.add(individuals.get(i));
-            }
-            if(individuals.size()%2==1){
-                startSpot=1;
-            }
-        } else{
-            tempArray = new ArrayList<Individual>();
-            for(int i=0;i<individuals2.size();i++){
-                tempArray.add(individuals2.get(i));
-            }
-            if(individuals2.size()%2==1){
-                startSpot=1;
-            }
+        tempArray = new ArrayList<Individual>();
+        for(int i=0;i<individuals.size();i++){
+            tempArray.add(individuals.get(i));
         }
+        if(individuals.size()%2==1){
+            startSpot=1;
+        }
+
         for(int i=startSpot; i<tempArray.size();i+=2){
             if(tempArray.size()>1){
                 int rand1 = (int)(Math.random()*tempArray.size());
@@ -219,15 +193,11 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 while(rand1==rand2){
                     rand1 = (int)(Math.random()*tempArray.size());
                 }
-                if(useEnVals){
-                    individuals.add(new Individual(tempArray.get(rand1).returnRandAl(),tempArray.get(rand2).returnRandAl()));
-                } else{
-                    individuals2.add(new Individual(tempArray.get(rand1).returnRandAl(),tempArray.get(rand2).returnRandAl()));
-                }
+                individuals.add(new Individual(tempArray.get(rand1).returnRandAl(),tempArray.get(rand2).returnRandAl()));
+                
                 tempArray.remove(rand1);
                 tempArray.remove(rand2);
                 i-=2;
-                System.out.println(tempArray.size());
             }
         }
         calculateVals();
@@ -236,11 +206,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
     public void calculateVals(){
         ArrayList<Individual> tempArray = new ArrayList<Individual>();
-        if(useEnVals){
-            tempArray = individuals;
-        } else{
-            tempArray = individuals2;
-        }
+        tempArray = individuals;
+    
         popSize = tempArray.size();
         totDom = 0;
         totRec = 0;
@@ -263,36 +230,29 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
     public void actionPerformed(ActionEvent e ){
         if(e.getSource() == enter){
-            if(useEnVals){
-                p = Double.parseDouble(enterP.getText());
-                q =  Double.parseDouble(enterQ.getText());
-                popSize =  Double.parseDouble(enterPopSize.getText());
-                //harvey weinburg equation
-                domRat = p*p;
-                recRat = q*q;
-                hetRat = 2*p*q;
-                totDom = (int)(domRat*popSize);
-                totRec = (int)(recRat * popSize);
-                totHet = (int)(hetRat * popSize);
-                //creating population of alleles
-                for(int i=0; i<totDom;i++){
-                    individuals.add(new Individual(1,1));
-                }
-                for(int i=0; i<totHet;i++){
-                    individuals.add(new Individual(1,2));
-                }
-                for(int i=0; i<totRec;i++){
-                    individuals.add(new Individual(2,2));
-                }
-                //so that sampling will happen
-                valsSet = true;
-                showPart2 = false;
-            } else{
-                sampleNum = Integer.parseInt(enterSampleNum.getText());
-                //predicting
-                valsSet = false; 
-                showPart2 = false;
+            p = Double.parseDouble(enterP.getText());
+            q =  Double.parseDouble(enterQ.getText());
+            popSize =  Double.parseDouble(enterPopSize.getText());
+            //harvey weinburg equation
+            domRat = p*p;
+            recRat = q*q;
+            hetRat = 2*p*q;
+            totDom = (int)(domRat*popSize);
+            totRec = (int)(recRat * popSize);
+            totHet = (int)(hetRat * popSize);
+            //creating population of alleles
+            for(int i=0; i<totDom;i++){
+                individuals.add(new Individual(1,1));
             }
+            for(int i=0; i<totHet;i++){
+                individuals.add(new Individual(1,2));
+            }
+            for(int i=0; i<totRec;i++){
+                individuals.add(new Individual(2,2));
+            }
+            //so that sampling will happen
+            valsSet = true;
+            showPart2 = false;
         } else if(e.getSource()==noReplace){
             sampleNum = Integer.parseInt(enterSampleNum.getText());
             //predicting
@@ -303,38 +263,19 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             randRecNum=0;
             randDomNum=0;
             randHetNum=0;
-            if(useEnVals){
-                ArrayList<Individual> tempArray = new ArrayList<Individual>();
-                for(int i=0;i<individuals.size();i++){
-                    tempArray.add(individuals.get(i));
-                }                
-                for(int i=0; i<sampleNum; i++){
-                    int rand1 = (int)(Math.random()*tempArray.size());
-                    Individual indiv = tempArray.remove(rand1);
-                    if(indiv.get1() == 1 && indiv.get2()==1){
-                        randDomNum++;
-                    } else if(indiv.get1()==2 && indiv.get2()==2){
-                        randRecNum++;
-                    } else{
-                        randHetNum++;
-                    }
-                }
-            //no replacement from natural selection
-            } else{
-                ArrayList<Individual> tempArray = new ArrayList<Individual>();
-                for(int i=0;i<individuals2.size();i++){
-                    tempArray.add(individuals2.get(i));
-                }                
-                for(int i=0; i<sampleNum; i++){
-                    int rand1 = (int)(Math.random()*tempArray.size());
-                    Individual indiv = tempArray.remove(rand1);
-                    if(indiv.get1() == 1 && indiv.get2()==1){
-                        randDomNum++;
-                    } else if(indiv.get1()==2 && indiv.get2()==2){
-                        randRecNum++;
-                    } else{
-                        randHetNum++;
-                    }
+            ArrayList<Individual> tempArray = new ArrayList<Individual>();
+            for(int i=0;i<individuals.size();i++){
+                tempArray.add(individuals.get(i));
+            }                
+            for(int i=0; i<sampleNum; i++){
+                int rand1 = (int)(Math.random()*tempArray.size());
+                Individual indiv = tempArray.remove(rand1);
+                if(indiv.get1() == 1 && indiv.get2()==1){
+                    randDomNum++;
+                } else if(indiv.get1()==2 && indiv.get2()==2){
+                    randRecNum++;
+                } else{
+                    randHetNum++;
                 }
             }
             showPart2 = true;
@@ -345,39 +286,20 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             recNum = recRat*sampleNum;
             hetNum = hetRat*sampleNum;
             //prepping for the sampling in paint component
-            randRecNum=0;
             randDomNum=0;
+            randRecNum=0;
             randHetNum=0;
-            if(useEnVals){
-                randDomNum=0;
-                randRecNum=0;
-                randHetNum=0;
-                for(int i=0; i<sampleNum; i++){
-                    int rand1 = (int)(Math.random()*individuals.size());
-                    if(individuals.get(rand1).get1() == 1 && individuals.get(rand1).get2()==1){
-                        randDomNum++;
-                    } else if(individuals.get(rand1).get1()==2 && individuals.get(rand1).get2()==2){
-                        randRecNum++;
-                    } else{
-                        randHetNum++;
-                    }
-                }
-            // replacement type from natural selection
-            } else{
-                randDomNum=0;
-                randRecNum=0;
-                randHetNum=0;
-                for(int i=0; i<sampleNum; i++){
-                    int rand1 = (int)(Math.random()*individuals2.size());
-                    if(individuals2.get(rand1).get1() == 1 && individuals2.get(rand1).get2()==1){
-                        randDomNum++;
-                    } else if(individuals2.get(rand1).get1()==2 && individuals2.get(rand1).get2()==2){
-                        randRecNum++;
-                    } else{
-                        randHetNum++;
-                    }
+            for(int i=0; i<sampleNum; i++){
+                int rand1 = (int)(Math.random()*individuals.size());
+                if(individuals.get(rand1).get1() == 1 && individuals.get(rand1).get2()==1){
+                    randDomNum++;
+                } else if(individuals.get(rand1).get1()==2 && individuals.get(rand1).get2()==2){
+                    randRecNum++;
+                } else{
+                    randHetNum++;
                 }
             }
+            // replacement type from natural selection
             showPart2=true;
         } else if (e.getSource() == natSelec){
             //determining the total number of each type of individual
@@ -404,19 +326,20 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             hetNum = 0;
             double amt1 = 0;
             double amt2 = 0;
+            individuals = new ArrayList<Individual>();
 
             for(int i=0; i<totDom; i++){
                 amt1+=2;
-                individuals2.add(new Individual(1,1));
+                individuals.add(new Individual(1,1));
             } 
             for(int i=0; i<totHet; i++){
                 amt1++;
                 amt2++;
-                individuals2.add(new Individual(1,2));
+                individuals.add(new Individual(1,2));
             }
             for(int i=0;i<totRec;i++){
                 amt2+=2;
-                individuals2.add(new Individual(2,2));
+                individuals.add(new Individual(2,2));
             }
             
             p = amt1/(popSize*2);
@@ -458,14 +381,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                     selecHet = true;
                 }
             }
-        }
-
-        if(e.getY()>=250&&e.getY()<=275){
-            if(e.getX()>=10&&e.getX()<=65){
-                useEnVals = true;
-            } else if (e.getX()>=65&&e.getX()<=160){
-                useEnVals = false;
-            } 
         }
         repaint();
     }
