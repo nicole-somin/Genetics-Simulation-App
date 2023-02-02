@@ -58,6 +58,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     //says if we're using pop1 or pop2
     private boolean usePop1 = false;
     private boolean usePop2 = false;
+    private boolean selecGeneFlow = false;
     //total of each type in the individuals
     private int totDom;
     private int totRec;
@@ -76,6 +77,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private JTextField enterSampleNum;
     private JTextField enterNatSelecVal;
     private JButton natSelec;
+    private JTextField numFlow12;
+    private JTextField numFlow21;
     //samples with replacement
     private JButton enter;
     //entters
@@ -111,6 +114,14 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         enterNatSelecVal.setBounds(470, 75, 150, 30);
 		add(enterNatSelecVal);
 
+        numFlow12 = new JTextField();
+        numFlow12.setBounds(770, 45, 150, 30);
+		add(numFlow12);
+
+        numFlow21 = new JTextField();
+        numFlow21.setBounds(770, 140, 150, 30);
+		add(numFlow21);
+
         replace = new JButton();
 		replace.setBounds(10, 15, 200, 30);
 		replace.setText("sampling with replacement");
@@ -118,13 +129,13 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 		add(replace);
 
         enter = new JButton();
-		enter.setBounds(750, 15, 200, 30);
+		enter.setBounds(960, 15, 120, 30);
 		enter.setText("enter");
         enter.addActionListener(this);
 		add(enter);
 
         reproduce = new JButton();
-		reproduce.setBounds(750, 75, 200, 30);
+		reproduce.setBounds(960, 75, 120, 30);
 		reproduce.setText("reproduce");
         reproduce.addActionListener(this);
 		add(reproduce);
@@ -142,7 +153,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 		add(noReplace);
 
         addPop = new JButton();
-        addPop.setBounds(750,135,200,30);
+        addPop.setBounds(960,135,120,30);
         addPop.setText("add population");
         addPop.addActionListener(this);
         add(addPop);
@@ -168,6 +179,14 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         g.drawString("Frequency of the Recessive Allele:",10, 186);
         g.drawString("Number of individuals you're sampling:", 230, 66);
         g.drawString("Frequency of individuals you want to kill:",470, 66 );
+        g.drawString("Enter the frequency of individuals", 770,10);
+        g.drawString("you want to transfer from", 770,25 );
+        g.drawString("population 1 to population 2",770,40);
+        g.drawString("Enter the frequency of individuals", 770,10+95);
+        g.drawString("you want to transfer from", 770,25+95 );
+        g.drawString("population 2 to population 1",770,40+95);
+        g.drawString("select this to use gene flow during the reproduction",770,200);
+
         // select menus
         g.setColor(new Color(100,100,100));
         g.fillRect(473, 126, 90, 25);
@@ -181,11 +200,19 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         if(selecHet == true){
             g.fillRect(533, 126, 30, 25);
         }
+
+        if(selecGeneFlow){
+            g.fillRect(770,207,85,25);
+        } else {
+            g.setColor(new Color(100,100,100));
+            g.fillRect(770,207,85,25);
+        }
         g.setColor(Color.BLACK);
         g.drawString("Click on the group(s) you natural selection to affect", 470, 120);
         g.drawString("aa", 480,141);
         g.drawString("AA", 510,141);
         g.drawString("Aa", 540,141);
+        g.drawString("use gene flow", 775,223);
 
         //2nd one
         g.setColor(new Color(100,100,100));
@@ -216,9 +243,9 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 g.drawString("Predicted Number of Homozygous Dominant Individuals: " + Double.toString((int)domNum),10, 125+325);
                 g.drawString("Predicted Number of Homozygous Recessive Individuals: " + Double.toString((int)recNum),10, 150+325);
                 g.drawString("Predicted Number of Heterozygous Individuals: " + Double.toString((int)hetNum),10, 175+325);
-                g.drawString("Sampled Number of Homozygous Dominant Individuals out of " + sampleNum + ": " + Integer.toString(randDomNum),10, 200+325);
-                g.drawString("Sampled Number of Homozygous Recessive Individuals " + sampleNum + ": " +Integer.toString(randRecNum),10, 225+325);
-                g.drawString("Sampled of Heterozygous Individuals " + sampleNum + ": " + Integer.toString(randHetNum),10, 250+325);
+                g.drawString("Sampled Number of Homozygous Dominant Individuals out of " + individuals.size() + ": " + Integer.toString(randDomNum),10, 200+325);
+                g.drawString("Sampled Number of Homozygous Recessive Individuals " + individuals.size() + ": " +Integer.toString(randRecNum),10, 225+325);
+                g.drawString("Sampled of Heterozygous Individuals " + individuals.size() + ": " + Integer.toString(randHetNum),10, 250+325);
             }
             
         }
@@ -236,15 +263,42 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 g.drawString("Predicted Number of Homozygous Dominant Individuals: " + Double.toString((int)domNum2),510, 125+325);
                 g.drawString("Predicted Number of Homozygous Recessive Individuals: " + Double.toString((int)recNum2),510, 150+325);
                 g.drawString("Predicted Number of Heterozygous Individuals: " + Double.toString((int)hetNum2),510, 175+325);
-                g.drawString("Sampled Number of Homozygous Dominant Individuals out of " + sampleNum2 + ": " + Integer.toString(randDomNum2),510, 200+325);
-                g.drawString("Sampled Number of Homozygous Recessive Individuals " + sampleNum2 + ": " +Integer.toString(randRecNum2),510, 225+325);
-                g.drawString("Sampled of Heterozygous Individuals " + sampleNum2 + ": " + Integer.toString(randHetNum2),510, 250+325);
+                g.drawString("Sampled Number of Homozygous Dominant Individuals out of " + individuals2.size() + ": " + Integer.toString(randDomNum2),510, 200+325);
+                g.drawString("Sampled Number of Homozygous Recessive Individuals " + individuals2.size() + ": " +Integer.toString(randRecNum2),510, 225+325);
+                g.drawString("Sampled of Heterozygous Individuals " + individuals2.size() + ": " + Integer.toString(randHetNum2),510, 250+325);
             }
             
         }
     }
 
     public void reproduce(){
+        if(selecGeneFlow==true&&usePop1==true&&usePop2==true){
+            int numTransfer1 = (int)(Double.parseDouble(numFlow12.getText())*individuals.size());
+            int numTransfer2 = (int)(Double.parseDouble(numFlow21.getText())*individuals2.size());
+            System.out.println(numTransfer1);
+            System.out.println(numTransfer2);
+            while(numTransfer1>0&&numTransfer2>0){
+                int randoNumber = (int)(Math.random()*individuals.size());
+                int randoNumber2 = (int)(Math.random()*individuals2.size());
+                individuals2.add(individuals.remove(randoNumber));
+                individuals.add(individuals2.remove(randoNumber2));
+                numTransfer1--;
+                numTransfer2--;
+            }
+            if(numTransfer1>0){
+                for(int i=0;i<numTransfer1;i++){
+                    int randoNumber = (int)(Math.random()*individuals.size());
+                    individuals2.add(individuals.remove(randoNumber));
+                }
+            } else if (numTransfer2>0){
+                for(int i=0;i<numTransfer2;i++){
+                    int randoNumber = (int)(Math.random()*individuals2.size());
+                    individuals.add(individuals2.remove(randoNumber));
+                }
+            }
+            System.out.println(individuals.size());
+            System.out.println(individuals2.size());
+        }
         if (usePop1){
             startSpot = 0;
             ArrayList<Individual> tempArray;
@@ -252,10 +306,10 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             for(int i=0;i<individuals.size();i++){
                 tempArray.add(individuals.get(i));
             }
-            if(individuals.size()%2==1){
+            if(tempArray.size()%2==1){
                 startSpot=1;
             }
-    
+            
             for(int i=startSpot; i<tempArray.size();i+=2){
                 if(tempArray.size()>1){
                     int rand1 = (int)(Math.random()*tempArray.size());
@@ -282,7 +336,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             if(individuals2.size()%2==1){
                 startSpot=1;
             }
-    
+            
             for(int i=startSpot; i<tempArray.size();i+=2){
                 if(tempArray.size()>1){
                     int rand1 = (int)(Math.random()*tempArray.size());
@@ -305,7 +359,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     public void calculateVals(){
         ArrayList<Individual> tempArray = new ArrayList<Individual>();
         tempArray = individuals;
-    
+        
         popSize = tempArray.size();
         totDom = 0;
         totRec = 0;
@@ -351,6 +405,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
     public void actionPerformed(ActionEvent e ){
         if(e.getSource() == enter){
+            individuals = new ArrayList<Individual>();
             p = Double.parseDouble(enterP.getText());
             q =  Double.parseDouble(enterQ.getText());
             popSize =  Double.parseDouble(enterPopSize.getText());
@@ -528,7 +583,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 showPart2 = false;
             }
             if (usePop2){
-                System.out.println("hi");
                //determining the total number of each type of individual
                totDom2 = (int)(popSize2*domRat2);
                totHet2 = (int)(popSize2*hetRat2);
@@ -536,7 +590,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                double selecRat = Double.parseDouble(enterNatSelecVal.getText());
                if(selecDom2){
                    totDom2 = totDom2 - (int)(totDom2*selecRat);
-               } 
+                } 
                if (selecHet2){
                    totHet2 = totHet2 - (int)(totHet2*selecRat);
                }
@@ -544,7 +598,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                    totRec2 = totRec2 - (int)(totRec2*selecRat);
                }
                popSize2 = totDom2 + totHet2+ totRec2;
-               System.out.println(popSize2);
 
 
                domRat2 = 1.0*totDom2/popSize2;
@@ -585,6 +638,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             reproduce();
         }
         else if (e.getSource() == addPop){
+            individuals2 = new ArrayList<Individual>();
             p2 = Double.parseDouble(enterP.getText());
             q2 =  Double.parseDouble(enterQ.getText());
             popSize2 =  Double.parseDouble(enterPopSize.getText());
@@ -623,17 +677,35 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 } else {
                     selecRec = true;
                 }
+
+                if(selecRec2){
+                    selecRec2 =false;
+                } else {
+                    selecRec2 = true;
+                }
             } else if (e.getX()>=500&&e.getX()<=530){
                 if(selecDom){
                     selecDom = false;
                 }else {
                     selecDom = true;
                 }
+
+                if(selecDom2){
+                    selecDom2 = false;
+                }else {
+                    selecDom2 = true;
+                }
             } else if (e.getX()>=530 && e.getX()<=560){
                 if(selecHet){
                     selecHet = false;
                 } else{
                     selecHet = true;
+                }
+
+                if(selecHet2){
+                    selecHet2 = false;
+                } else{
+                    selecHet2 = true;
                 }
             }
         }
@@ -652,6 +724,14 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                     usePop2 = true;
                 }
             } 
+        }
+
+        if(e.getX()>770&&e.getX()<770+85&&e.getY()>207&&e.getY()<207+25){
+            if(selecGeneFlow){
+                selecGeneFlow = false;
+            } else{
+                selecGeneFlow = true;
+            }
         }
         repaint();
     }
