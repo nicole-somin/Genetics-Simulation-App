@@ -415,28 +415,29 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             q = (1- Double.parseDouble(enterP.getText()));
             if(p<0||p>1){
                 showBadEntryMessage = true;
-            } 
-            popSize =  Double.parseDouble(enterPopSize.getText());
-            //harvey weinburg equation
-            domRat = p*p;
-            recRat = q*q;
-            hetRat = 2*p*q;
-            totDom = (int)(domRat*popSize);
-            totRec = (int)(recRat * popSize);
-            totHet = (int)(hetRat * popSize);
-            //creating population of alleles
-            for(int i=0; i<totDom;i++){
-                individuals.add(new Individual(1,1));
+            } else{
+                popSize =  Double.parseDouble(enterPopSize.getText());
+                //harvey weinburg equation
+                domRat = p*p;
+                recRat = q*q;
+                hetRat = 2*p*q;
+                totDom = (int)(domRat*popSize);
+                totRec = (int)(recRat * popSize);
+                totHet = (int)(hetRat * popSize);
+                //creating population of alleles
+                for(int i=0; i<totDom;i++){
+                    individuals.add(new Individual(1,1));
+                }
+                for(int i=0; i<totHet;i++){
+                    individuals.add(new Individual(1,2));
+                }
+                for(int i=0; i<totRec;i++){
+                    individuals.add(new Individual(2,2));
+                }
+                //so that sampling will happen
+                valsSet = true;
+                showPart2 = false;
             }
-            for(int i=0; i<totHet;i++){
-                individuals.add(new Individual(1,2));
-            }
-            for(int i=0; i<totRec;i++){
-                individuals.add(new Individual(2,2));
-            }
-            //so that sampling will happen
-            valsSet = true;
-            showPart2 = false;
         } else if(e.getSource()==noReplace){
             if (usePop1){
                 sampleNum = Integer.parseInt(enterSampleNum.getText());
@@ -649,26 +650,30 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             individuals2 = new ArrayList<Individual>();
             p2 = Double.parseDouble(enterP.getText());
             q2 =  (1-Double.parseDouble(enterP.getText()));
-            popSize2 =  Double.parseDouble(enterPopSize.getText());
-            //harvey weinburg equation
-            domRat2 = p2*p2;
-            recRat2 = q2*q2;
-            hetRat2 = 2*p2*q2;
-            totDom2 = (int)(domRat2*popSize2);
-            totRec2 = (int)(recRat2 * popSize2);
-            totHet2 = (int)(hetRat2 * popSize2);
-            //creating population of alleles
-            for(int i=0; i<totDom2;i++){
-                individuals2.add(new Individual(1,1));
+            if(p<0||p>1){
+                showBadEntryMessage = true;
+            } else{
+                popSize2 =  Double.parseDouble(enterPopSize.getText());
+                //harvey weinburg equation
+                domRat2 = p2*p2;
+                recRat2 = q2*q2;
+                hetRat2 = 2*p2*q2;
+                totDom2 = (int)(domRat2*popSize2);
+                totRec2 = (int)(recRat2 * popSize2);
+                totHet2 = (int)(hetRat2 * popSize2);
+                //creating population of alleles
+                for(int i=0; i<totDom2;i++){
+                    individuals2.add(new Individual(1,1));
+                }
+                for(int i=0; i<totHet2;i++){
+                    individuals2.add(new Individual(1,2));
+                }
+                for(int i=0; i<totRec2;i++){
+                    individuals2.add(new Individual(2,2));
+                }
+                valsSet2 = true;
+                showPart2 = false;
             }
-            for(int i=0; i<totHet2;i++){
-                individuals2.add(new Individual(1,2));
-            }
-            for(int i=0; i<totRec2;i++){
-                individuals2.add(new Individual(2,2));
-            }
-            valsSet2 = true;
-            showPart2 = false;
         }
        repaint();
     }  
