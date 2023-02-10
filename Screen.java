@@ -69,6 +69,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     //determines whether or not you just natural selected (for display purposes)
     private boolean showPart2 = false;
     private boolean showPart22 = false;
+    private boolean showBadEntryMessage = false;
     private int startSpot=0;
     //makes sure that when you select from the menus it doesn't re-sample
     private JTextField enterP;
@@ -182,6 +183,12 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         g.drawString("population 2 to population 1",770,40+95);
         g.drawString("select this to use gene flow during the reproduction",770,200);
 
+        g.setColor(Color.RED);
+        if(showBadEntryMessage){
+            g.drawString("Please enter a number greater than 0 and less than 1", 5, 190);
+        }
+        g.setColor(Color.BLACK);
+
         // select menus
         g.setColor(new Color(100,100,100));
         g.fillRect(473, 126, 90, 25);
@@ -211,18 +218,18 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
         //2nd one
         g.setColor(new Color(100,100,100));
-        g.fillRect(10, 250-45, 200, 25);
+        g.fillRect(10, 250-25, 200, 25);
         g.setColor(new Color(62, 140, 73));
         if(usePop1 == true){
-            g.fillRect(10, 250-45, 100, 25);
+            g.fillRect(10, 250-25, 100, 25);
         } 
         if(usePop2 == true){
-            g.fillRect(110, 250-45, 100, 25);
+            g.fillRect(110, 250-25, 100, 25);
         }
         g.setColor(Color.BLACK);
-        g.drawString("Click on the populations(s) you want to use", 7, 240-45);
-        g.drawString("population 1", 15,267-45);
-        g.drawString("population 2", 120,267-45);
+        g.drawString("Click on the populations(s) you want to use", 7, 240-25);
+        g.drawString("population 1", 15,267-25);
+        g.drawString("population 2", 120,267-25);
 
         // does the sampling
         if(valsSet == true){     
@@ -401,10 +408,14 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     }
 
     public void actionPerformed(ActionEvent e ){
+        showBadEntryMessage = false;
         if(e.getSource() == enter){
             individuals = new ArrayList<Individual>();
             p = Double.parseDouble(enterP.getText());
             q = (1- Double.parseDouble(enterP.getText()));
+            if(p<0||p>1){
+                showBadEntryMessage = true;
+            } 
             popSize =  Double.parseDouble(enterPopSize.getText());
             //harvey weinburg equation
             domRat = p*p;
@@ -707,7 +718,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             }
         }
 
-        if(e.getY()>=250-45&&e.getY()<=280-45){
+        if(e.getY()>=250-25&&e.getY()<=280-25){
             if(e.getX()>=10&&e.getX()<=110){
                 if(usePop1){
                     usePop1 =false;
