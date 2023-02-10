@@ -56,7 +56,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private boolean selecRec2 = false;
     private boolean selecHet2 = false;
     //says if we're using pop1 or pop2
-    private boolean usePop1 = false;
+    private boolean usePop1 = true;
     private boolean usePop2 = false;
     private boolean selecGeneFlow = false;
     //total of each type in the individuals
@@ -72,7 +72,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private int startSpot=0;
     //makes sure that when you select from the menus it doesn't re-sample
     private JTextField enterP;
-    private JTextField enterQ;
     private JTextField enterPopSize;
     private JTextField enterSampleNum;
     private JTextField enterNatSelecVal;
@@ -95,12 +94,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         setFocusable(true);
 
 		enterP = new JTextField();
-		enterP.setBounds(10, 135, 150, 30);
+		enterP.setBounds(10, 147, 150, 30);
 		add(enterP);
-
-		enterQ = new JTextField();
-		enterQ.setBounds(10, 195, 150, 30);
-		add(enterQ);
 
         enterPopSize = new JTextField();
         enterPopSize.setBounds(10, 75, 150, 30);
@@ -175,8 +170,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         g.fillRect(0, 0, 1100, 600);
         g.setColor(Color.BLACK);
         g.drawString("Population Size:", 10, 66);
-        g.drawString("Frequency of the Dominant Allele:",10, 126);
-        g.drawString("Frequency of the Recessive Allele:",10, 186);
+        g.drawString("Frequency of the Dominant Allele",10, 126);
+        g.drawString("(Other frequencies will be calculated):",10, 140);
         g.drawString("Number of individuals you're sampling:", 230, 66);
         g.drawString("Frequency of individuals you want to kill:",470, 66 );
         g.drawString("Enter the frequency of individuals", 770,10);
@@ -216,22 +211,23 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
         //2nd one
         g.setColor(new Color(100,100,100));
-        g.fillRect(10, 250, 200, 25);
+        g.fillRect(10, 250-45, 200, 25);
         g.setColor(new Color(62, 140, 73));
         if(usePop1 == true){
-            g.fillRect(10, 250, 100, 25);
+            g.fillRect(10, 250-45, 100, 25);
         } 
         if(usePop2 == true){
-            g.fillRect(110, 250, 100, 25);
+            g.fillRect(110, 250-45, 100, 25);
         }
         g.setColor(Color.BLACK);
-        g.drawString("Click on the populations(s) you want to use", 7, 240);
-        g.drawString("population 1", 15,267);
-        g.drawString("population 2", 120,267);
+        g.drawString("Click on the populations(s) you want to use", 7, 240-45);
+        g.drawString("population 1", 15,267-45);
+        g.drawString("population 2", 120,267-45);
 
         // does the sampling
         if(valsSet == true){     
             //drawing on screen
+            g.drawString("Popuation 1: ", 10, 275);
             g.drawString("Population Size: " + String.valueOf(popSize), 10, 0+300);
             g.drawString("Ratio of Dominant Alleles: " + Double.toString(p),10, 0+325);
             g.drawString("Ratio of Recessive Alleles: " + Double.toString(q),10, 25+325);
@@ -252,6 +248,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
         if(valsSet2 == true){     
             //drawing on screen
+            g.drawString("Popuation 2: ", 510, 275);
             g.drawString("Population Size: " + String.valueOf(popSize2), 510, 0+300);
             g.drawString("Ratio of Dominant Alleles: " + Double.toString(p2),510, 0+325);
             g.drawString("Ratio of Recessive Alleles: " + Double.toString(q2),510, 25+325);
@@ -407,7 +404,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         if(e.getSource() == enter){
             individuals = new ArrayList<Individual>();
             p = Double.parseDouble(enterP.getText());
-            q =  Double.parseDouble(enterQ.getText());
+            q = (1- Double.parseDouble(enterP.getText()));
             popSize =  Double.parseDouble(enterPopSize.getText());
             //harvey weinburg equation
             domRat = p*p;
@@ -640,7 +637,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         else if (e.getSource() == addPop){
             individuals2 = new ArrayList<Individual>();
             p2 = Double.parseDouble(enterP.getText());
-            q2 =  Double.parseDouble(enterQ.getText());
+            q2 =  (1-Double.parseDouble(enterP.getText()));
             popSize2 =  Double.parseDouble(enterPopSize.getText());
             //harvey weinburg equation
             domRat2 = p2*p2;
@@ -710,7 +707,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             }
         }
 
-        if(e.getY()>=250&&e.getY()<=280){
+        if(e.getY()>=250-45&&e.getY()<=280-45){
             if(e.getX()>=10&&e.getX()<=110){
                 if(usePop1){
                     usePop1 =false;
