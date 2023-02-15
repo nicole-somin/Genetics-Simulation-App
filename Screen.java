@@ -160,7 +160,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
     @Override
 	public Dimension getPreferredSize(){
-		return new Dimension(1100,600);
+		return new Dimension(1500,700);
 	}
 
     @Override
@@ -168,7 +168,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         setLayout(null);
         super.paintComponent(g);
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, 1100, 600);
+        g.fillRect(0, 0, 1500, 700);
         g.setColor(Color.BLACK);
         g.drawString("Population Size:", 10, 66);
         g.drawString("Frequency of the Dominant Allele",10, 126);
