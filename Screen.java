@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 public class Screen extends JPanel implements ActionListener, MouseListener{
     //ratio of dominant vs reccessive genes
@@ -71,6 +73,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private boolean showPart22 = false;
     private boolean showBadEntryMessage = false;
     private int startSpot=0;
+    private int numberOfPops = 0;
     //makes sure that when you select from the menus it doesn't re-sample
     private JTextField enterP;
     private JTextField enterPopSize;
@@ -80,79 +83,172 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private JTextField numFlow12;
     private JTextField numFlow21;
     //samples with replacement
-    private JButton enter;
-    //entters
     private JButton noReplace;	
     //is set when you click on either the replacement or non-replacement button
     private JButton replace;
     private JButton reproduce;
     private JButton addPop;
+    //labels
+    private JLabel populationSize;
+    private JLabel freqOfDomAllele;
+    private JLabel individualsSampling;
+    private JLabel component11;
+    private JLabel component13;
+    private JLabel component14;
+    private JLabel component16;
+    private JLabel component20;
+    private JLabel component21;
     //individuals is created during natural selection & filled with individuals based on the current information in population (1-dom, 2-rec, 3-het)
     ArrayList<Individual> individuals = new ArrayList<Individual>();
     ArrayList<Individual> individuals2 = new ArrayList<Individual>();
     public Screen(){
         setLayout(null);
         setFocusable(true);
+        /*
+        populationSize = new JLabel();
+        populationSize.setFont(new Font("Arial", Font.PLAIN, 15));
+        populationSize.setHorizontalAlignment(SwingConstants.LEFT);
+        populationSize.setBounds(15, 15, 200, 30);
+        populationSize.setText("Population Size:");
+        this.add(populationSize);
 
+        freqOfDomAllele = new JLabel();
+        freqOfDomAllele.setFont(new Font("Arial", Font.PLAIN, 15));
+        freqOfDomAllele.setHorizontalAlignment(SwingConstants.LEFT);
+        freqOfDomAllele.setBounds(15, 80, 250, 30);
+        freqOfDomAllele.setText("Frequency of Dominant Allele (0<x<1)");
+        this.add(freqOfDomAllele);
+
+        individualsSampling = new JLabel();
+        individualsSampling.setFont(new Font("Arial", Font.PLAIN, 15));
+        individualsSampling.setHorizontalAlignment(SwingConstants.LEFT);
+        individualsSampling.setBounds(275, 380, 150, 30);
+        individualsSampling.setText("Number of individuals you're sampling:");
+        this.add(individualsSampling);
+
+        component11 = new JLabel();
+        component11.setFont(new Font("Arial", Font.PLAIN, 15));
+        component11.setHorizontalAlignment(SwingConstants.LEFT);
+        component11.setBounds(15, 220, 275, 30);
+        component11.setText("Frequency of Natural Selection (0<x<1)");
+        this.add(component11);
+
+        component13 = new JLabel();
+        component13.setFont(new Font("Arial", Font.PLAIN, 15));
+        component13.setHorizontalAlignment(SwingConstants.LEFT);
+        component13.setBounds(15, 295, 250, 30);
+        component13.setText("Click on the group(s) you want natural selection to affect");
+        this.add(component13);
+
+        component14 = new JLabel();
+        component14.setFont(new Font("Arial", Font.PLAIN, 15));
+        component14.setHorizontalAlignment(SwingConstants.LEFT);
+        component14.setBounds(15, 430, 300, 30);
+        component14.setText("Frequency of individuals to transfer from pop1 to pop2 (0<x<1)");
+        this.add(component14);
+
+        component16 = new JLabel();
+        component16.setFont(new Font("Arial", Font.PLAIN, 15));
+        component16.setHorizontalAlignment(SwingConstants.LEFT);
+        component16.setBounds(15, 505, 300, 30);
+        component16.setText("Frequency of individuals to transfer from pop2 to pop1 (0<x<1)");
+        this.add(component16);
+
+        component20 = new JLabel();
+        component20.setFont(new Font("Arial", Font.PLAIN, 15));
+        component20.setHorizontalAlignment(SwingConstants.LEFT);
+        component20.setBounds(275, 20, 200, 30);
+        component20.setText("Click the population(s) you want to use");
+        this.add(component20);
+
+        component21 = new JLabel();
+        component21.setFont(new Font("Arial", Font.PLAIN, 15));
+        component21.setHorizontalAlignment(SwingConstants.LEFT);
+        component21.setBounds(275, 120, 200, 30);
+        component21.setText("Select this to use gene flow");
+        this.add(component21);
+        */
 		enterP = new JTextField();
-		enterP.setBounds(10, 147, 150, 30);
-		add(enterP);
+        enterP.setFont(new Font("Arial", Font.PLAIN, 20));
+        enterP.setHorizontalAlignment(SwingConstants.LEFT);
+        enterP.setBounds(15, 115, 100, 30);
+        enterP.setText("");
+        this.add(enterP);
 
         enterPopSize = new JTextField();
-        enterPopSize.setBounds(10, 75, 150, 30);
-		add(enterPopSize);
+        enterPopSize.setFont(new Font("Arial", Font.PLAIN, 20));
+        enterPopSize.setHorizontalAlignment(SwingConstants.LEFT);
+        enterPopSize.setBounds(15, 40, 100, 30);
+        enterPopSize.setText("");
+        this.add(enterPopSize);
 
         enterSampleNum = new JTextField();
-        enterSampleNum.setBounds(230, 75, 150, 30);
-		add(enterSampleNum);
+        enterSampleNum.setFont(new Font("Arial", Font.PLAIN, 20));
+        enterSampleNum.setHorizontalAlignment(SwingConstants.LEFT);
+        enterSampleNum.setBounds(275, 420, 100, 30);
+        enterSampleNum.setText("");
+        this.add(enterSampleNum);
 
         enterNatSelecVal = new JTextField();
-        enterNatSelecVal.setBounds(470, 75, 150, 30);
-		add(enterNatSelecVal);
+        enterNatSelecVal.setFont(new Font("Arial", Font.PLAIN, 20));
+        enterNatSelecVal.setHorizontalAlignment(SwingConstants.LEFT);
+        enterNatSelecVal.setBounds(15, 255, 100, 30);
+        enterNatSelecVal.setText("");
+        this.add(enterNatSelecVal);
 
         numFlow12 = new JTextField();
-        numFlow12.setBounds(770, 45, 150, 30);
-		add(numFlow12);
+        numFlow12.setFont(new Font("Arial", Font.PLAIN, 20));
+        numFlow12.setHorizontalAlignment(SwingConstants.LEFT);
+        numFlow12.setBounds(15, 465, 100, 30);
+        numFlow12.setText("");
+        this.add(numFlow12);
 
         numFlow21 = new JTextField();
-        numFlow21.setBounds(770, 140, 150, 30);
-		add(numFlow21);
+        numFlow21.setFont(new Font("Arial", Font.PLAIN, 20));
+        numFlow21.setHorizontalAlignment(SwingConstants.LEFT);
+        numFlow21.setBounds(15, 540, 100, 30);
+        numFlow21.setText("");
+        this.add(numFlow21);
 
         replace = new JButton();
-		replace.setBounds(10, 15, 200, 30);
-		replace.setText("sampling with replacement");
+        replace.setFont(new Font("Arial", Font.PLAIN, 15));
+        replace.setHorizontalAlignment(SwingConstants.CENTER);
+        replace.setBounds(275, 460, 200, 30);
+        replace.setText("Sample with Replacement");
+        this.add(replace);
         replace.addActionListener(this);
-		add(replace);
-
-        enter = new JButton();
-		enter.setBounds(960, 15, 120, 30);
-		enter.setText("enter");
-        enter.addActionListener(this);
-		add(enter);
 
         reproduce = new JButton();
-		reproduce.setBounds(960, 75, 120, 30);
-		reproduce.setText("reproduce");
+        reproduce.setFont(new Font("Arial", Font.PLAIN, 15));
+        reproduce.setHorizontalAlignment(SwingConstants.CENTER);
+        reproduce.setBounds(275, 220, 100, 30);
+        reproduce.setText("Reproduce");
+        this.add(reproduce);
         reproduce.addActionListener(this);
-		add(reproduce);
 
         natSelec = new JButton();
-		natSelec.setBounds(470, 15, 140, 30);
-		natSelec.setText("natural selection");
+        natSelec.setFont(new Font("Arial", Font.PLAIN, 15));
+        natSelec.setHorizontalAlignment(SwingConstants.CENTER);
+        natSelec.setBounds(15, 375, 150, 30);
+        natSelec.setText("Natural Selection");
+        this.add(natSelec);
         natSelec.addActionListener(this);
-		add(natSelec);
 
         noReplace = new JButton();
-		noReplace.setBounds(230, 15, 220, 30);
-		noReplace.setText("sampling without replacement");
+        noReplace.setFont(new Font("Arial", Font.PLAIN, 15));
+        noReplace.setHorizontalAlignment(SwingConstants.CENTER);
+        noReplace.setBounds(275, 500, 220, 30);
+        noReplace.setText("Sample without Replacement");
+        this.add(noReplace);
         noReplace.addActionListener(this);
-		add(noReplace);
 
         addPop = new JButton();
-        addPop.setBounds(960,135,120,30);
-        addPop.setText("add population");
+        addPop.setFont(new Font("Arial", Font.PLAIN, 15));
+        addPop.setHorizontalAlignment(SwingConstants.CENTER);
+        addPop.setBounds(15, 155, 150, 30);
+        addPop.setText("Add Population");
+        this.add(addPop);
         addPop.addActionListener(this);
-        add(addPop);
 
 
         addMouseListener(this);
@@ -170,25 +266,31 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, 1500, 650);
         g.setColor(Color.BLACK);
-        g.drawString("Population Size:", 10, 66);
-        g.drawString("Frequency of the Dominant Allele",10, 126);
-        g.drawString("(Other frequencies will be calculated):",10, 140);
-        g.drawString("Number of individuals you're sampling:", 230, 66);
-        g.drawString("Frequency of individuals you want to kill:",470, 66 );
-        g.drawString("Enter the frequency of individuals", 770,10);
-        g.drawString("you want to transfer from", 770,25 );
-        g.drawString("population 1 to population 2",770,40);
-        g.drawString("Enter the frequency of individuals", 770,10+95);
-        g.drawString("you want to transfer from", 770,25+95 );
-        g.drawString("population 2 to population 1",770,40+95);
-        g.drawString("select this to use gene flow during the reproduction",770,200);
+        
+        g.drawString("Population Size:", 15, 30);
+        g.drawString("Frequency of the Dominant Allele",15, 95);
+        g.drawString("(0<x<1)",15, 110);
+        g.drawString("Frequency of Natural Selection:", 15, 235);
+        g.drawString("(0<x<1)",15, 245);
+        g.drawString("Click on the group(s) you want",15, 310);
+        g.drawString("natural selection to affect",15, 320);
+        g.drawString("Frequency of individuals to transfer", 15,445);
+        g.drawString("from pop1 to pop2 (0<x<1)", 15,455 );
+        g.drawString("Frequency of individuals to transfer",15,520);
+        g.drawString("from pop2 to pop1 (0<x<1)", 15,530);
+        g.drawString("Click on the population(s) you", 290 ,35);
+        g.drawString("you want to use",290, 45);
+        g.drawString("Select this to use gene flow", 290,135);
+        g.drawString("Number of individuals", 290,395);
+        g.drawString("you're sampling", 290,405);
+        
 
         g.setColor(Color.RED);
         if(showBadEntryMessage){
             g.drawString("Please enter a number greater than 0 and less than 1", 5, 190);
         }
         g.setColor(Color.BLACK);
-
+        /*
         // select menus
         g.setColor(new Color(100,100,100));
         g.fillRect(473, 126, 90, 25);
@@ -210,11 +312,11 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             g.fillRect(770,207,85,25);
         }
         g.setColor(Color.BLACK);
-        g.drawString("Click on the group(s) you natural selection to affect", 470, 120);
-        g.drawString("aa", 480,141);
-        g.drawString("AA", 510,141);
-        g.drawString("Aa", 540,141);
-        g.drawString("use gene flow", 775,223);
+        //g.drawString("Click on the group(s) you natural selection to affect", 470, 120);
+        g.drawString("aa", 10,335); //480,141
+        g.drawString("AA", 40,335);
+        g.drawString("Aa", 70,335);
+        g.drawString("use gene flow", 270,135);
 
         //2nd one
         g.setColor(new Color(100,100,100));
@@ -227,10 +329,10 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             g.fillRect(110, 250-25, 100, 25);
         }
         g.setColor(Color.BLACK);
-        g.drawString("Click on the populations(s) you want to use", 7, 240-25);
-        g.drawString("population 1", 15,267-25);
-        g.drawString("population 2", 120,267-25);
-
+        //g.drawString("Click on the populations(s) you want to use", 7, 240-25);
+        g.drawString("population 1", 270,65);//15, 267-25
+        g.drawString("population 2", 375,65);
+        */
         // does the sampling
         if(valsSet == true){     
             //drawing on screen
@@ -408,36 +510,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
     public void actionPerformed(ActionEvent e ){
         showBadEntryMessage = false;
-        if(e.getSource() == enter){
-            individuals = new ArrayList<Individual>();
-            p = Double.parseDouble(enterP.getText());
-            q = (1- Double.parseDouble(enterP.getText()));
-            if(p<0||p>1){
-                showBadEntryMessage = true;
-            } else{
-                popSize =  Integer.parseInt(enterPopSize.getText());
-                //harvey weinburg equation
-                domRat = p*p;
-                recRat = q*q;
-                hetRat = 2*p*q;
-                totDom = (int)(domRat*popSize);
-                totRec = (int)(recRat * popSize);
-                totHet = (int)(hetRat * popSize);
-                //creating population of alleles
-                for(int i=0; i<totDom;i++){
-                    individuals.add(new Individual(1,1));
-                }
-                for(int i=0; i<totHet;i++){
-                    individuals.add(new Individual(1,2));
-                }
-                for(int i=0; i<totRec;i++){
-                    individuals.add(new Individual(2,2));
-                }
-                //so that sampling will happen
-                valsSet = true;
-                showPart2 = false;
-            }
-        } else if(e.getSource()==noReplace){
+         else if(e.getSource()==noReplace){
             if (usePop1){
                 sampleNum = Integer.parseInt(enterSampleNum.getText());
                 //predicting
@@ -646,32 +719,65 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             reproduce();
         }
         else if (e.getSource() == addPop){
-            individuals2 = new ArrayList<Individual>();
-            p2 = Double.parseDouble(enterP.getText());
-            q2 =  (1-Double.parseDouble(enterP.getText()));
-            if(p<0||p>1){
-                showBadEntryMessage = true;
+            if(numOfPops==0){
+                individuals = new ArrayList<Individual>();
+                p = Double.parseDouble(enterP.getText());
+                q = (1- Double.parseDouble(enterP.getText()));
+                if(p<0||p>1){
+                    showBadEntryMessage = true;
+                } else{
+                    popSize =  Integer.parseInt(enterPopSize.getText());
+                    //harvey weinburg equation
+                    domRat = p*p;
+                    recRat = q*q;
+                    hetRat = 2*p*q;
+                    totDom = (int)(domRat*popSize);
+                    totRec = (int)(recRat * popSize);
+                    totHet = (int)(hetRat * popSize);
+                    //creating population of alleles
+                    for(int i=0; i<totDom;i++){
+                        individuals.add(new Individual(1,1));
+                    }
+                    for(int i=0; i<totHet;i++){
+                        individuals.add(new Individual(1,2));
+                    }
+                    for(int i=0; i<totRec;i++){
+                        individuals.add(new Individual(2,2));
+                    }
+                    //so that sampling will happen
+                    valsSet = true;
+                    showPart2 = false;
+                }
+            } else if (numOfPops==1){
+                individuals2 = new ArrayList<Individual>();
+                p2 = Double.parseDouble(enterP.getText());
+                q2 =  (1-Double.parseDouble(enterP.getText()));
+                if(p<0||p>1){
+                    showBadEntryMessage = true;
+                } else{
+                    popSize2 =  Integer.parseInt(enterPopSize.getText());
+                    //harvey weinburg equation
+                    domRat2 = p2*p2;
+                    recRat2 = q2*q2;
+                    hetRat2 = 2*p2*q2;
+                    totDom2 = (int)(domRat2*popSize2);
+                    totRec2 = (int)(recRat2 * popSize2);
+                    totHet2 = (int)(hetRat2 * popSize2);
+                    //creating population of alleles
+                    for(int i=0; i<totDom2;i++){
+                        individuals2.add(new Individual(1,1));
+                    }
+                    for(int i=0; i<totHet2;i++){
+                        individuals2.add(new Individual(1,2));
+                    }
+                    for(int i=0; i<totRec2;i++){
+                        individuals2.add(new Individual(2,2));
+                    }
+                    valsSet2 = true;
+                    showPart2 = false;
+                }
             } else{
-                popSize2 =  Integer.parseInt(enterPopSize.getText());
-                //harvey weinburg equation
-                domRat2 = p2*p2;
-                recRat2 = q2*q2;
-                hetRat2 = 2*p2*q2;
-                totDom2 = (int)(domRat2*popSize2);
-                totRec2 = (int)(recRat2 * popSize2);
-                totHet2 = (int)(hetRat2 * popSize2);
-                //creating population of alleles
-                for(int i=0; i<totDom2;i++){
-                    individuals2.add(new Individual(1,1));
-                }
-                for(int i=0; i<totHet2;i++){
-                    individuals2.add(new Individual(1,2));
-                }
-                for(int i=0; i<totRec2;i++){
-                    individuals2.add(new Individual(2,2));
-                }
-                valsSet2 = true;
-                showPart2 = false;
+                addPop.setVisible(false);
             }
         }
        repaint();
