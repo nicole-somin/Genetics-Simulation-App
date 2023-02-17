@@ -33,8 +33,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private double domNum2;
     private double hetNum2;
     //total population size
-    private double popSize;
-    private double popSize2;
+    private int popSize;
+    private int popSize2;
     //number of recessive, dominant, and hetero individuals when sampled
     private int randDomNum = 0;
     private int randRecNum = 0;
@@ -249,8 +249,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 g.drawString("Sampled Number of Homozygous Dominant Individuals out of " + individuals.size() + ": " + Integer.toString(randDomNum),10, 200+325);
                 g.drawString("Sampled Number of Homozygous Recessive Individuals " + individuals.size() + ": " +Integer.toString(randRecNum),10, 225+325);
                 g.drawString("Sampled of Heterozygous Individuals " + individuals.size() + ": " + Integer.toString(randHetNum),10, 250+325);
-            }
-            
+            } 
         }
 
         if(valsSet2 == true){     
@@ -416,7 +415,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             if(p<0||p>1){
                 showBadEntryMessage = true;
             } else{
-                popSize =  Double.parseDouble(enterPopSize.getText());
+                popSize =  Integer.parseInt(enterPopSize.getText());
                 //harvey weinburg equation
                 domRat = p*p;
                 recRat = q*q;
@@ -653,7 +652,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             if(p<0||p>1){
                 showBadEntryMessage = true;
             } else{
-                popSize2 =  Double.parseDouble(enterPopSize.getText());
+                popSize2 =  Integer.parseInt(enterPopSize.getText());
                 //harvey weinburg equation
                 domRat2 = p2*p2;
                 recRat2 = q2*q2;
