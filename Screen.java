@@ -21,11 +21,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private double q;
     private double p2;
     private double q2;
-    // ratio of homo recessive, homo dominint, and hetero individuals
-    private double recRat;
-    private double domRat;
-    private double recRat2;
-    private double domRat2;
     //predicted number of reccessive, dominant, and hetero individuals
     private int recNum;
     private int domNum;
@@ -69,6 +64,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private boolean showPart2 = false;
     private boolean showPart22 = false;
     private boolean showBadEntryMessage = false;
+    private boolean showNotEnoughPopsMessage = false;
     private int numOfPops = 0;
     //makes sure that when you select from the menus it doesn't re-sample
     private JTextField enterP;
@@ -234,12 +230,15 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         g.drawString("you want to use",277, 50);
         g.drawString("Number of individuals", 277,395-250);
         g.drawString("you're sampling", 277,410-250);
-       
-
 
         g.setColor(Color.RED);
         if(showBadEntryMessage){
-            g.drawString("Please enter a number greater than 0 and less than 1", 5, 190);
+            g.drawString("Please enter a number greater", 305, 350);
+            g.drawString("than 0 and less than 1", 327, 370);
+        } 
+        if(showNotEnoughPopsMessage){
+            g.drawString("You must have two populations",305,350);
+            g.drawString("to do gene flow",350,370);
         }
         g.setColor(Color.BLACK);
        
@@ -282,16 +281,16 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             deletePop1.setBounds(545, 195, 120, 30);
             g.drawString("Popuation 1: ", 545, 25);
             g.drawString("Population Size: " + String.valueOf(popSize), 545, 50);
-            g.drawString("Ratio of Dominant Alleles: " + Double.toString(p),545, 75);
-            g.drawString("Ratio of Recessive Alleles: " + Double.toString(q),545, 100);
+            g.drawString("Ratio of Dominant Alleles: " + Double.toString(Math.floor(p*1000)/1000),545, 75);
+            g.drawString("Ratio of Recessive Alleles: " + Double.toString(Math.floor(q*1000)/1000),545, 100);
             g.drawString("Predicted Number of AA by Harvey Weinberg: " + Integer.toString((int)(p*p*popSize*1.0)), 545, 125);
             g.drawString("Predicted Number of Aa by Harvey Weinberg: " + Integer.toString((int)(p*q*popSize*2.0)), 545, 150);
             g.drawString("Predicted Number of aa by Harvey Weinberg: " + Integer.toString((int)(q*q*popSize*1.0)), 545, 175);
 
             if(showPart2 == true){
                 deletePop1.setBounds(545, 295, 120, 30);
-                g.drawString("Predicted Number of Dominant Alleles: " + Double.toString((int)domNum),545, 125+75);
-                g.drawString("Predicted Number of Recessive Alleles: " + Double.toString((int)recNum),545, 150+75);
+                g.drawString("Predicted Number of Dominant Alleles: " + Integer.toString((int)domNum),545, 125+75);
+                g.drawString("Predicted Number of Recessive Alleles: " + Integer.toString((int)recNum),545, 150+75);
                 g.drawString("Sampled Number of Dominant Alleles out of " + individuals.size() + ": " + Integer.toString(randDomNum),545, 175+75);
                 g.drawString("Sampled Number of Recessive Alleles out of " + individuals.size() + ": " +Integer.toString(randRecNum),545, 200+75);
             }
@@ -303,8 +302,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             //drawing on screen
             g.drawString("Popuation 2: ", 890, 25);
             g.drawString("Population Size: " + String.valueOf(popSize2), 890, 50);
-            g.drawString("Ratio of Dominant Alleles: " + Double.toString(p2),890, 75);
-            g.drawString("Ratio of Recessive Alleles: " + Double.toString(q2),890, 100);
+            g.drawString("Ratio of Dominant Alleles: " + Double.toString(Math.floor(p2*1000)/1000),890, 75);
+            g.drawString("Ratio of Recessive Alleles: " + Double.toString(Math.floor(q2*1000)/1000),890, 100);
             g.drawString("Predicted Number of AA by Harvey Weinberg: " + Integer.toString((int)(p2*p2*popSize2*1.0)), 890, 125);
             g.drawString("Predicted Number of Aa by Harvey Weinberg: " + Integer.toString((int)(p2*q2*popSize2*2.0)), 890, 150);
             g.drawString("Predicted Number of aa by Harvey Weinberg: " + Integer.toString((int)(q2*q2*popSize2*1.0)), 890, 175);
@@ -312,17 +311,14 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
             if(showPart22 == true){
                 deletePop2.setBounds(890, 295, 120, 30);
-                g.drawString("Predicted Number of Dominant Alleles: " + Double.toString((int)domNum2),890, 125+75);
-                g.drawString("Predicted Number of Recessive Alleles: " + Double.toString((int)recNum2),890, 150+75);
+                g.drawString("Predicted Number of Dominant Alleles: " + Integer.toString((int)domNum2),890, 125+75);
+                g.drawString("Predicted Number of Recessive Alleles: " + Integer.toString((int)recNum2),890, 150+75);
                 g.drawString("Sampled Number of Dominant Alleles out of " + individuals2.size() + ": " + Integer.toString(randDomNum2),890, 175+75);
                 g.drawString("Sampled Number of Recessive Alleles out of " + individuals2.size() + ": " +Integer.toString(randRecNum2),890, 200+75);
             }
         }
            
     }
-
-
-
     public void calculateVals(){
         ArrayList<Integer> tempArray = new ArrayList<Integer>();
         tempArray = individuals;
@@ -358,25 +354,26 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         q2 = (1.0*totRec)/popSize;
     }
 
-
     public void actionPerformed(ActionEvent e ){
         showBadEntryMessage = false;
+        showNotEnoughPopsMessage = false;
         if(e.getSource()==noReplace){
             if (usePop1){
                 sampleNum = Integer.parseInt(enterSampleNum.getText());
-                domNum = (int)(domRat*sampleNum);
-                recNum = (int)(recRat*sampleNum);
+                domNum = (int)(p*sampleNum);
+                recNum = (int)(q*sampleNum);
                 randRecNum = 0;
                 randDomNum = 0;
                 ArrayList<Integer> tempArray = new ArrayList<Integer>();
                 for(int i=0;i<individuals.size();i++){
                     tempArray.add(individuals.get(i));
                 }        
-                individuals.clear();        
+                individuals.clear();     
                 for(int i=0; i<sampleNum; i++){
                     int rand1 = (int)(Math.random()*tempArray.size());
                     int num = tempArray.get(rand1);
-                    individuals.add(tempArray.remove(rand1));
+                    tempArray.remove(rand1);
+                    individuals.add(num);
                     if(num == 1){
                         randDomNum++;
                     } else if(num==2){
@@ -384,12 +381,13 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                     }
                 }
                 showPart2 = true;
+                calculateVals();
             }
             if (usePop2){
                 sampleNum = Integer.parseInt(enterSampleNum.getText());
                 //predicting
-                domNum2 = (int)(domRat2*sampleNum);
-                recNum2 = (int)(recRat2*sampleNum);
+                domNum2 = (int)(p2*sampleNum);
+                recNum2 = (int)(q2*sampleNum);
                 //prepping for the sampling in paint component
                 randRecNum2=0;
                 randDomNum2=0;
@@ -409,6 +407,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                     }
                 }
                 showPart22 = true;
+                calculateVals2();
             }
            
         }  else if (e.getSource() == replace){
@@ -438,6 +437,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 }
                 // replacement type from natural selection
                 showPart2=true;
+                calculateVals();
             }
             if (usePop2){
                 sampleNum = Integer.parseInt(enterSampleNum.getText());
@@ -463,6 +463,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 for(int i=0; i<randRecNum2;i++){
                     individuals2.add(2);
                 }
+                calculateVals2();
                 // replacement type from natural selection
                 showPart22=true;
             }
@@ -546,6 +547,37 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 showPart22 = false;
             }
         } else if (e.getSource()==geneFlow){
+            if(numOfPops==2){
+                if(Double.parseDouble(numFlow12.getText())>0&&Double.parseDouble(numFlow12.getText())<1&&Double.parseDouble(numFlow21.getText())>0&&Double.parseDouble(numFlow21.getText())<1){
+                    int numTransfer1 = (int)(Double.parseDouble(numFlow12.getText())*individuals.size());
+                    int numTransfer2 = (int)(Double.parseDouble(numFlow21.getText())*individuals2.size());
+                    while(numTransfer1>0&&numTransfer2>0){
+                        int randoNumber = (int)(Math.random()*individuals.size());
+                        int randoNumber2 = (int)(Math.random()*individuals2.size());
+                        individuals2.add(individuals.remove(randoNumber));
+                        individuals.add(individuals2.remove(randoNumber2));
+                        numTransfer1--;
+                        numTransfer2--;
+                    }
+                    if(numTransfer1>0){
+                        for(int i=0;i<numTransfer1;i++){
+                            int randoNumber = (int)(Math.random()*individuals.size());
+                            individuals2.add(individuals.remove(randoNumber));
+                        }
+                    } else if (numTransfer2>0){
+                        for(int i=0;i<numTransfer2;i++){
+                            int randoNumber = (int)(Math.random()*individuals2.size());
+                            individuals.add(individuals2.remove(randoNumber));
+                        }
+                    }  
+                    calculateVals();
+                    calculateVals2();
+                } else{
+                    showBadEntryMessage = true;
+                }                  
+            } else{
+                showNotEnoughPopsMessage = true;
+            }
         }
         else if (e.getSource() == addPop){
             if(numOfPops==0){
