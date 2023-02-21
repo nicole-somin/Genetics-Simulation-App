@@ -24,27 +24,21 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     // ratio of homo recessive, homo dominint, and hetero individuals
     private double recRat;
     private double domRat;
-    private double hetRat;
     private double recRat2;
     private double domRat2;
-    private double hetRat2;
     //predicted number of reccessive, dominant, and hetero individuals
-    private double recNum;
-    private double domNum;
-    private double hetNum;
-    private double recNum2;
-    private double domNum2;
-    private double hetNum2;
+    private int recNum;
+    private int domNum;
+    private int recNum2;
+    private int domNum2;
     //total population size
     private int popSize;
     private int popSize2;
     //number of recessive, dominant, and hetero individuals when sampled
     private int randDomNum = 0;
     private int randRecNum = 0;
-    private int randHetNum = 0;
     private int randDomNum2 = 0;
     private int randRecNum2 = 0;
-    private int randHetNum2 = 0;
     //number inputted by the user that they want to sample
     private int sampleNum = 0;
     //x&y vals for the natural selection menu
@@ -69,10 +63,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     //total of each type in the individuals
     private int totDom;
     private int totRec;
-    private int totHet;
     private int totDom2;
     private int totRec2;
-    private int totHet2;
     //determines whether or not you just natural selected (for display purposes)
     private boolean showPart2 = false;
     private boolean showPart22 = false;
@@ -94,14 +86,14 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private JButton natSelec;
     private JButton deletePop1;
     private JButton deletePop2;
-    //individuals is created during natural selection & filled with individuals based on the current information in population (1-dom, 2-rec, 3-het)
-    ArrayList<Individual> individuals = new ArrayList<Individual>();
-    ArrayList<Individual> individuals2 = new ArrayList<Individual>();
+    //individuals is created during natural selection & filled with integers based on the current information in population (1-dom, 2-rec)
+    ArrayList<Integer> individuals = new ArrayList<Integer>();
+    ArrayList<Integer> individuals2 = new ArrayList<Integer>();
     public Screen(){
         setLayout(null);
         setFocusable(true);
         enterP = new JTextField();
-        enterP.setFont(new Font("Arial", Font.PLAIN, 20));
+        enterP.setFont(new Font("Arial", Font.PLAIN, 15));
         enterP.setHorizontalAlignment(SwingConstants.LEFT);
         enterP.setBounds(15, 115, 100, 30);
         enterP.setText("");
@@ -109,7 +101,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
 
         enterPopSize = new JTextField();
-        enterPopSize.setFont(new Font("Arial", Font.PLAIN, 20));
+        enterPopSize.setFont(new Font("Arial", Font.PLAIN, 15));
         enterPopSize.setHorizontalAlignment(SwingConstants.LEFT);
         enterPopSize.setBounds(15, 40, 100, 30);
         enterPopSize.setText("");
@@ -117,7 +109,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
 
         enterSampleNum = new JTextField();
-        enterSampleNum.setFont(new Font("Arial", Font.PLAIN, 20));
+        enterSampleNum.setFont(new Font("Arial", Font.PLAIN, 15));
         enterSampleNum.setHorizontalAlignment(SwingConstants.LEFT);
         enterSampleNum.setBounds(275, 420-250, 100, 30);
         enterSampleNum.setText("");
@@ -125,7 +117,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
 
         enterNatSelecVal = new JTextField();
-        enterNatSelecVal.setFont(new Font("Arial", Font.PLAIN, 20));
+        enterNatSelecVal.setFont(new Font("Arial", Font.PLAIN, 15));
         enterNatSelecVal.setHorizontalAlignment(SwingConstants.LEFT);
         enterNatSelecVal.setBounds(15, 255, 100, 30);
         enterNatSelecVal.setText("");
@@ -133,7 +125,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
 
         numFlow12 = new JTextField();
-        numFlow12.setFont(new Font("Arial", Font.PLAIN, 20));
+        numFlow12.setFont(new Font("Arial", Font.PLAIN, 15));
         numFlow12.setHorizontalAlignment(SwingConstants.LEFT);
         numFlow12.setBounds(15, 465, 100, 30);
         numFlow12.setText("");
@@ -141,7 +133,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
 
         numFlow21 = new JTextField();
-        numFlow21.setFont(new Font("Arial", Font.PLAIN, 20));
+        numFlow21.setFont(new Font("Arial", Font.PLAIN, 15));
         numFlow21.setHorizontalAlignment(SwingConstants.LEFT);
         numFlow21.setBounds(15, 540, 100, 30);
         numFlow21.setText("");
@@ -168,7 +160,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         deletePop1 = new JButton();
         deletePop1.setFont(new Font("Arial", Font.PLAIN, 15));
         deletePop1.setHorizontalAlignment(SwingConstants.CENTER);
-        deletePop1.setBounds(545, 220, 120, 30);
+        deletePop1.setBounds(545, 195, 120, 30);
         deletePop1.setText("Delete pop1");
         this.add(deletePop1);
         deletePop1.addActionListener(this);
@@ -177,7 +169,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         deletePop2 = new JButton();
         deletePop2.setFont(new Font("Arial", Font.PLAIN, 15));
         deletePop2.setHorizontalAlignment(SwingConstants.CENTER);
-        deletePop2.setBounds(890, 220, 120, 30);
+        deletePop2.setBounds(890, 195, 120, 30);
         deletePop2.setText("Delete pop2");
         this.add(deletePop2);
         deletePop2.addActionListener(this);
@@ -208,9 +200,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         addPop.setText("Add Population");
         this.add(addPop);
         addPop.addActionListener(this);
-
-
-
 
         addMouseListener(this);
     }
@@ -286,36 +275,47 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         g.drawString("population 1", selec3X+5,selec3Y+16);//15, 267-25
         g.drawString("population 2", selec3X+115,selec3Y+16);
        
+        
         // does the sampling
         if(valsSet == true){    
             //drawing on screen
+            deletePop1.setBounds(545, 195, 120, 30);
             g.drawString("Popuation 1: ", 545, 25);
             g.drawString("Population Size: " + String.valueOf(popSize), 545, 50);
             g.drawString("Ratio of Dominant Alleles: " + Double.toString(p),545, 75);
             g.drawString("Ratio of Recessive Alleles: " + Double.toString(q),545, 100);
+            g.drawString("Predicted Number of AA by Harvey Weinberg: " + Integer.toString((int)(p*p*popSize*1.0)), 545, 125);
+            g.drawString("Predicted Number of Aa by Harvey Weinberg: " + Integer.toString((int)(p*q*popSize*2.0)), 545, 150);
+            g.drawString("Predicted Number of aa by Harvey Weinberg: " + Integer.toString((int)(q*q*popSize*1.0)), 545, 175);
 
             if(showPart2 == true){
-                g.drawString("Predicted Number of Dominant Alleles: " + Double.toString((int)domNum),545, 125);
-                g.drawString("Predicted Number of Recessive Alleles: " + Double.toString((int)recNum),545, 150);
-                g.drawString("Sampled Number of Dominant Alleles out of " + individuals.size() + ": " + Integer.toString(randDomNum),545, 175);
-                g.drawString("Sampled Number of Recessive Alleles out of " + individuals.size() + ": " +Integer.toString(randRecNum),545, 200);
+                deletePop1.setBounds(545, 295, 120, 30);
+                g.drawString("Predicted Number of Dominant Alleles: " + Double.toString((int)domNum),545, 125+75);
+                g.drawString("Predicted Number of Recessive Alleles: " + Double.toString((int)recNum),545, 150+75);
+                g.drawString("Sampled Number of Dominant Alleles out of " + individuals.size() + ": " + Integer.toString(randDomNum),545, 175+75);
+                g.drawString("Sampled Number of Recessive Alleles out of " + individuals.size() + ": " +Integer.toString(randRecNum),545, 200+75);
             }
         }
 
 
         if(valsSet2 == true){    
+            deletePop2.setBounds(890, 195, 120, 30);
             //drawing on screen
             g.drawString("Popuation 2: ", 890, 25);
             g.drawString("Population Size: " + String.valueOf(popSize2), 890, 50);
             g.drawString("Ratio of Dominant Alleles: " + Double.toString(p2),890, 75);
             g.drawString("Ratio of Recessive Alleles: " + Double.toString(q2),890, 100);
+            g.drawString("Predicted Number of AA by Harvey Weinberg: " + Integer.toString((int)(p2*p2*popSize2*1.0)), 890, 125);
+            g.drawString("Predicted Number of Aa by Harvey Weinberg: " + Integer.toString((int)(p2*q2*popSize2*2.0)), 890, 150);
+            g.drawString("Predicted Number of aa by Harvey Weinberg: " + Integer.toString((int)(q2*q2*popSize2*1.0)), 890, 175);
 
 
             if(showPart22 == true){
-                g.drawString("Predicted Number of Dominant Alleles: " + Double.toString((int)domNum2),890, 125);
-                g.drawString("Predicted Number of Recessive Alleles: " + Double.toString((int)recNum2),890, 150);
-                g.drawString("Sampled Number of Dominant Alleles out of " + individuals.size() + ": " + Integer.toString(randDomNum2),890, 175);
-                g.drawString("Sampled Number of Recessive Alleles out of " + individuals.size() + ": " +Integer.toString(randRecNum2),890, 200);
+                deletePop2.setBounds(890, 295, 120, 30);
+                g.drawString("Predicted Number of Dominant Alleles: " + Double.toString((int)domNum2),890, 125+75);
+                g.drawString("Predicted Number of Recessive Alleles: " + Double.toString((int)recNum2),890, 150+75);
+                g.drawString("Sampled Number of Dominant Alleles out of " + individuals2.size() + ": " + Integer.toString(randDomNum2),890, 175+75);
+                g.drawString("Sampled Number of Recessive Alleles out of " + individuals2.size() + ": " +Integer.toString(randRecNum2),890, 200+75);
             }
         }
            
@@ -324,50 +324,38 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
 
     public void calculateVals(){
-        ArrayList<Individual> tempArray = new ArrayList<Individual>();
+        ArrayList<Integer> tempArray = new ArrayList<Integer>();
         tempArray = individuals;
        
         popSize = tempArray.size();
         totDom = 0;
         totRec = 0;
-        totHet = 0;
         for(int i=0;i<tempArray.size();i++){
-            if(tempArray.get(i).getType()==1){
+            if(tempArray.get(i)==1){
                 totDom++;
-            } else if (tempArray.get(i).getType()==2){
+            } else if (tempArray.get(i)==2){
                 totRec++;
-            } else{
-                totHet++;
             }
         }
-        domRat = (1.0*totDom)/popSize;
-        recRat = (1.0*totRec)/popSize;
-        hetRat = (1.0*totHet)/popSize;
-        p = (2.0*totDom+totHet)/(popSize*2);
-        q = (2.0*totRec+totHet)/(popSize*2);
+        p = (1.0*totDom)/popSize;
+        q = (1.0*totRec)/popSize;
     }
     public void calculateVals2(){
-        ArrayList<Individual> tempArray = new ArrayList<Individual>();
+        ArrayList<Integer> tempArray = new ArrayList<Integer>();
         tempArray = individuals2;
-   
-        popSize2 = tempArray.size();
-        totDom2 = 0;
-        totRec2 = 0;
-        totHet2 = 0;
+       
+        popSize = tempArray.size();
+        totDom = 0;
+        totRec = 0;
         for(int i=0;i<tempArray.size();i++){
-            if(tempArray.get(i).getType()==1){
-                totDom2++;
-            } else if (tempArray.get(i).getType()==2){
-                totRec2++;
-            } else{
-                totHet2++;
+            if(tempArray.get(i)==1){
+                totDom++;
+            } else if (tempArray.get(i)==2){
+                totRec++;
             }
         }
-        domRat2 = (1.0*totDom2)/popSize2;
-        recRat2 = (1.0*totRec2)/popSize2;
-        hetRat2 = (1.0*totHet2)/popSize2;
-        p2 = (2.0*totDom2+totHet2)/(popSize2*2);
-        q2 = (2.0*totRec2+totHet2)/(popSize2*2);
+        p2 = (1.0*totDom)/popSize;
+        q2 = (1.0*totRec)/popSize;
     }
 
 
@@ -376,27 +364,23 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         if(e.getSource()==noReplace){
             if (usePop1){
                 sampleNum = Integer.parseInt(enterSampleNum.getText());
-                //predicting
-                domNum = domRat*sampleNum;
-                recNum = recRat*sampleNum;
-                hetNum = hetRat*sampleNum;
-                //prepping for the sampling in paint component
-                randRecNum=0;
-                randDomNum=0;
-                randHetNum=0;
-                ArrayList<Individual> tempArray = new ArrayList<Individual>();
+                domNum = (int)(domRat*sampleNum);
+                recNum = (int)(recRat*sampleNum);
+                randRecNum = 0;
+                randDomNum = 0;
+                ArrayList<Integer> tempArray = new ArrayList<Integer>();
                 for(int i=0;i<individuals.size();i++){
                     tempArray.add(individuals.get(i));
-                }                
+                }        
+                individuals.clear();        
                 for(int i=0; i<sampleNum; i++){
                     int rand1 = (int)(Math.random()*tempArray.size());
-                    Individual indiv = tempArray.remove(rand1);
-                    if(indiv.get1() == 1 && indiv.get2()==1){
+                    int num = tempArray.get(rand1);
+                    individuals.add(tempArray.remove(rand1));
+                    if(num == 1){
                         randDomNum++;
-                    } else if(indiv.get1()==2 && indiv.get2()==2){
+                    } else if(num==2){
                         randRecNum++;
-                    } else{
-                        randHetNum++;
                     }
                 }
                 showPart2 = true;
@@ -404,26 +388,24 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             if (usePop2){
                 sampleNum = Integer.parseInt(enterSampleNum.getText());
                 //predicting
-                domNum2 = domRat2*sampleNum;
-                recNum2 = recRat2*sampleNum;
-                hetNum2 = hetRat2*sampleNum;
+                domNum2 = (int)(domRat2*sampleNum);
+                recNum2 = (int)(recRat2*sampleNum);
                 //prepping for the sampling in paint component
                 randRecNum2=0;
                 randDomNum2=0;
-                randHetNum2=0;
-                ArrayList<Individual> tempArray = new ArrayList<Individual>();
+                ArrayList<Integer> tempArray = new ArrayList<Integer>();
                 for(int i=0;i<individuals2.size();i++){
                     tempArray.add(individuals2.get(i));
-                }                
+                } 
+                individuals2.clear();          
                 for(int i=0; i<sampleNum; i++){
                     int rand1 = (int)(Math.random()*tempArray.size());
-                    Individual indiv = tempArray.remove(rand1);
-                    if(indiv.get1() == 1 && indiv.get2()==1){
+                    int num = tempArray.get(rand1);
+                    individuals2.add(tempArray.remove(rand1));
+                    if(num == 1){
                         randDomNum2++;
-                    } else if(indiv.get1()==2 && indiv.get2()==2){
+                    } else if(num==2){
                         randRecNum2++;
-                    } else{
-                        randHetNum2++;
                     }
                 }
                 showPart22 = true;
@@ -433,22 +415,26 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             if (usePop1){
                 sampleNum = Integer.parseInt(enterSampleNum.getText());
                 //predicting
-                domNum = domRat*sampleNum;
-                recNum = recRat*sampleNum;
-                hetNum = hetRat*sampleNum;
+                domNum = (int)(p*sampleNum);
+                recNum = (int)(q*sampleNum);
                 //prepping for the sampling in paint component
                 randDomNum=0;
                 randRecNum=0;
-                randHetNum=0;
                 for(int i=0; i<sampleNum; i++){
                     int rand1 = (int)(Math.random()*individuals.size());
-                    if(individuals.get(rand1).get1() == 1 && individuals.get(rand1).get2()==1){
+                    int num = individuals.get(rand1);
+                    if(num == 1){
                         randDomNum++;
-                    } else if(individuals.get(rand1).get1()==2 && individuals.get(rand1).get2()==2){
+                    } else if(num==2){
                         randRecNum++;
-                    } else{
-                        randHetNum++;
                     }
+                }
+                individuals.clear();
+                for(int i=0; i<randDomNum;i++){
+                    individuals.add(1);
+                }
+                for(int i=0; i<randRecNum;i++){
+                    individuals.add(2);
                 }
                 // replacement type from natural selection
                 showPart2=true;
@@ -456,22 +442,26 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             if (usePop2){
                 sampleNum = Integer.parseInt(enterSampleNum.getText());
                 //predicting
-                domNum2 = domRat2*sampleNum;
-                recNum2 = recRat2*sampleNum;
-                hetNum2 = hetRat2*sampleNum;
+                domNum2 = (int)(p2*sampleNum);
+                recNum2 = (int)(q2*sampleNum);
                 //prepping for the sampling in paint component
                 randDomNum2=0;
                 randRecNum2=0;
-                randHetNum2=0;
                 for(int i=0; i<sampleNum; i++){
                     int rand1 = (int)(Math.random()*individuals2.size());
-                    if(individuals2.get(rand1).get1() == 1 && individuals2.get(rand1).get2()==1){
+                    int num = individuals2.get(rand1);
+                    if(num == 1){
                         randDomNum2++;
-                    } else if(individuals2.get(rand1).get1()==2 && individuals2.get(rand1).get2()==2){
+                    } else if(num==2){
                         randRecNum2++;
-                    } else{
-                        randHetNum2++;
                     }
+                }
+                individuals2.clear();
+                for(int i=0; i<randDomNum2;i++){
+                    individuals2.add(1);
+                }
+                for(int i=0; i<randRecNum2;i++){
+                    individuals2.add(2);
                 }
                 // replacement type from natural selection
                 showPart22=true;
@@ -479,137 +469,101 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         } else if (e.getSource() == natSelec){
             if (usePop1){
                 //determining the total number of each type of individual
-                totDom = (int)(popSize*domRat);
-                totHet = (int)(popSize*hetRat);
-                totRec = (int)(popSize*recRat);
+                totDom = 0;
+                totRec = 0;
+                for(int i=0; i<individuals.size();i++){
+                    if(individuals.get(i).equals(1)){
+                        totDom++;
+                    } else if (individuals.get(i).equals(2)){
+                        totRec++;
+                    }
+                }
                 double selecRat = Double.parseDouble(enterNatSelecVal.getText());
                 if(selecDom){
                     totDom = totDom - (int)(totDom*selecRat);
                 }
-                if (selecHet){
-                    totHet = totHet - (int)(totHet*selecRat);
-                }
                 if(selecRec){
                     totRec = totRec - (int)(totRec*selecRat);
                 }
-                popSize = totDom + totHet+ totRec;
+                popSize = totDom + totRec;
 
 
-                domRat = 1.0*totDom/popSize;
-                recRat = 1.0*totRec/popSize;
-                hetRat = 1.0*totHet/popSize;
-                domNum = 0;
-                recNum = 0;
-                hetNum = 0;
-                double amt1 = 0;
-                double amt2 = 0;
-                individuals = new ArrayList<Individual>();
+                p = 1.0*totDom/popSize;
+                q = 1.0*totRec/popSize;
+                individuals.clear();
 
 
                 for(int i=0; i<totDom; i++){
-                    amt1+=2;
-                    individuals.add(new Individual(1,1));
+                    individuals.add(1);
                 }
-                for(int i=0; i<totHet; i++){
-                    amt1++;
-                    amt2++;
-                    individuals.add(new Individual(1,2));
-                }
+    
                 for(int i=0;i<totRec;i++){
-                    amt2+=2;
-                    individuals.add(new Individual(2,2));
+                    individuals.add(2);
                 }
-               
-                p = amt1/(popSize*2);
-                q = amt2/(popSize*2);          
+                      
                 randRecNum=0;
                 randDomNum=0;
-                randHetNum=0;
                 valsSet = true;
                 showPart2 = false;
             }
             if (usePop2){
                //determining the total number of each type of individual
-               totDom2 = (int)(popSize2*domRat2);
-               totHet2 = (int)(popSize2*hetRat2);
-               totRec2 = (int)(popSize2*recRat2);
-               double selecRat = Double.parseDouble(enterNatSelecVal.getText());
-               if(selecDom2){
-                   totDom2 = totDom2 - (int)(totDom2*selecRat);
+               totDom2 = 0;
+               totRec2 = 0;
+                for(int i=0; i<individuals2.size();i++){
+                    if(individuals2.get(i).equals(1)){
+                        totDom2++;
+                    } else if (individuals2.get(i).equals(2)){
+                        totRec2++;
+                    }
                 }
-               if (selecHet2){
-                   totHet2 = totHet2 - (int)(totHet2*selecRat);
-               }
-               if(selecRec2){
-                   totRec2 = totRec2 - (int)(totRec2*selecRat);
-               }
-               popSize2 = totDom2 + totHet2+ totRec2;
+                double selecRat = Double.parseDouble(enterNatSelecVal.getText());
+                if(selecDom2){
+                    totDom2 = totDom2 - (int)(totDom2*selecRat);
+                }
+                if(selecRec){
+                    totRec2 = totRec2 - (int)(totRec2*selecRat);
+                }
+                popSize2 = totDom2 + totRec2;
 
 
+                p2 = 1.0*totDom2/popSize2;
+                q2 = 1.0*totRec2/popSize2;
+                individuals2.clear();
 
 
-               domRat2 = 1.0*totDom2/popSize2;
-               recRat2 = 1.0*totRec2/popSize2;
-               hetRat2 = 1.0*totHet2/popSize2;
-               domNum2 = 0;
-               recNum2 = 0;
-               hetNum2 = 0;
-               double amt1 = 0;
-               double amt2 = 0;
-               individuals2 = new ArrayList<Individual>();
-
-
-               for(int i=0; i<totDom2; i++){
-                   amt1+=2;
-                   individuals2.add(new Individual(1,1));
-               }
-               for(int i=0; i<totHet2; i++){
-                   amt1++;
-                   amt2++;
-                   individuals2.add(new Individual(1,2));
-               }
-               for(int i=0;i<totRec2;i++){
-                   amt2+=2;
-                   individuals2.add(new Individual(2,2));
-               }
-               
-               p2 = amt1/(popSize2*2);
-               q2 = amt2/(popSize2*2);          
-               randRecNum2=0;
-               randDomNum2=0;
-               randHetNum2=0;
-               valsSet2 = true;
-               showPart22 = false;
+                for(int i=0; i<totDom2; i++){
+                    individuals2.add(1);
+                }
+    
+                for(int i=0;i<totRec2;i++){
+                    individuals2.add(2);
+                }
+                      
+                randRecNum2=0;
+                randDomNum2=0;
+                valsSet2 = true;
+                showPart22 = false;
             }
-           
-           
         } else if (e.getSource()==geneFlow){
         }
         else if (e.getSource() == addPop){
             if(numOfPops==0){
-                individuals = new ArrayList<Individual>();
+                individuals.clear();
                 p = Double.parseDouble(enterP.getText());
-                q = (1- Double.parseDouble(enterP.getText()));
+                q = (1-Double.parseDouble(enterP.getText()));
                 if(p<0||p>1){
                     showBadEntryMessage = true;
                 } else{
                     popSize =  Integer.parseInt(enterPopSize.getText());
-                    //harvey weinburg equation
-                    domRat = p*p;
-                    recRat = q*q;
-                    hetRat = 2*p*q;
-                    totDom = (int)(domRat*popSize);
-                    totRec = (int)(recRat * popSize);
-                    totHet = (int)(hetRat * popSize);
+                    totDom = (int)(p*popSize);
+                    totRec = (int)(q*popSize);
                     //creating population of alleles
                     for(int i=0; i<totDom;i++){
-                        individuals.add(new Individual(1,1));
-                    }
-                    for(int i=0; i<totHet;i++){
-                        individuals.add(new Individual(1,2));
+                        individuals.add(1);
                     }
                     for(int i=0; i<totRec;i++){
-                        individuals.add(new Individual(2,2));
+                        individuals.add(2);
                     }
                     //so that sampling will happen
                     valsSet = true;
@@ -618,7 +572,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                     deletePop1.setVisible(true);
                 }
             } else if (numOfPops==1){
-                individuals2 = new ArrayList<Individual>();
+                individuals2.clear();
                 p2 = Double.parseDouble(enterP.getText());
                 q2 =  (1-Double.parseDouble(enterP.getText()));
                 if(p<0||p>1){
@@ -626,23 +580,17 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 } else{
                     popSize2 =  Integer.parseInt(enterPopSize.getText());
                     //harvey weinburg equation
-                    domRat2 = p2*p2;
-                    recRat2 = q2*q2;
-                    hetRat2 = 2*p2*q2;
-                    totDom2 = (int)(domRat2*popSize2);
-                    totRec2 = (int)(recRat2 * popSize2);
-                    totHet2 = (int)(hetRat2 * popSize2);
+                    totDom2 = (int)(p2*popSize2);
+                    totRec2 = (int)(q2 * popSize2);
                     //creating population of alleles
                     for(int i=0; i<totDom2;i++){
-                        individuals2.add(new Individual(1,1));
-                    }
-                    for(int i=0; i<totHet2;i++){
-                        individuals2.add(new Individual(1,2));
+                        individuals2.add(1);
                     }
                     for(int i=0; i<totRec2;i++){
-                        individuals2.add(new Individual(2,2));
+                        individuals2.add(2);
                     }
                     valsSet2 = true;
+                    showPart22 = false;
                     showPart2 = false;
                     numOfPops++;
                     addPop.setVisible(false);
