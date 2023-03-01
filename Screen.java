@@ -340,18 +340,18 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         ArrayList<Integer> tempArray = new ArrayList<Integer>();
         tempArray = individuals2;
        
-        popSize = tempArray.size();
-        totDom = 0;
-        totRec = 0;
+        popSize2 = tempArray.size();
+        totDom2 = 0;
+        totRec2 = 0;
         for(int i=0;i<tempArray.size();i++){
             if(tempArray.get(i)==1){
-                totDom++;
+                totDom2++;
             } else if (tempArray.get(i)==2){
-                totRec++;
+                totRec2++;
             }
         }
-        p2 = (1.0*totDom)/popSize;
-        q2 = (1.0*totRec)/popSize;
+        p2 = (1.0*totDom2)/popSize2;
+        q2 = (1.0*totRec2)/popSize2;
     }
 
     public void actionPerformed(ActionEvent e ){
@@ -607,7 +607,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 individuals2.clear();
                 p2 = Double.parseDouble(enterP.getText());
                 q2 =  (1-Double.parseDouble(enterP.getText()));
-                if(p<0||p>1){
+                if(p2<0||p2>1){
                     showBadEntryMessage = true;
                 } else{
                     popSize2 =  Integer.parseInt(enterPopSize.getText());
@@ -683,7 +683,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                     selecRec = true;
                 }
 
-
                 if(selecRec2){
                     selecRec2 =false;
                 } else {
@@ -696,7 +695,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                     selecDom = true;
                 }
 
-
                 if(selecDom2){
                     selecDom2 = false;
                 }else {
@@ -708,7 +706,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 } else{
                     selecHet = true;
                 }
-
 
                 if(selecHet2){
                     selecHet2 = false;
