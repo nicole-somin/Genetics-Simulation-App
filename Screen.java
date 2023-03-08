@@ -55,6 +55,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     //says if we're using pop1 or pop2
     private boolean usePop1 = true;
     private boolean usePop2 = false;
+    private boolean drawRect1 = false;
+    private boolean drawRect2 = false;
     //total of each type in the individuals
     private int totDom;
     private int totRec;
@@ -233,8 +235,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
         g.setColor(Color.RED);
         if(showBadEntryMessage){
-            g.drawString("Please enter a number greater", 305, 350);
-            g.drawString("than 0 and less than 1", 327, 370);
+            g.drawString("Please enter a number greater than", 305, 350);
+            g.drawString("or equal to 0 and less than 1", 327, 370);
         } 
         if(showNotEnoughPopsMessage){
             g.drawString("You must have two populations",305,350);
@@ -318,6 +320,83 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             }
         }
            
+        if(drawRect1){
+            g.drawRect(600,400,200,200);
+            //blue
+            g.setColor(new Color(32, 58, 89));
+            int totalIndividuals = popSize;
+            int dimension = (int)Math.sqrt(40000/popSize);
+            int numInOneRow = 200/dimension;
+            int domPix = (int)(totalIndividuals*p);
+            int recPix = (int)(totalIndividuals*q);
+            int numDomRows = domPix/numInOneRow;
+            int numRecRows = recPix/numInOneRow;
+            int xVar = 600;
+            int yVar = 400;
+            for (int i=0; i<numDomRows; i++){
+                g.fillRect(xVar,yVar, 200, dimension);
+                yVar+=dimension;
+            }
+            for (int i=0; i<domPix%numInOneRow; i++){
+                g.fillRect(xVar, yVar, dimension, dimension);
+                xVar+=dimension;
+            }
+            //red
+            g.setColor(new Color(207, 57, 50));
+            for(int i=0; i<numInOneRow-(domPix%numInOneRow); i++){
+                g.fillRect(xVar,yVar,dimension,dimension);
+                xVar+=dimension;
+            }
+
+            xVar=600;
+            yVar+=dimension;
+            for(int i=0; i<numRecRows; i++){
+                g.fillRect(xVar,yVar, 200, dimension);
+                yVar+=dimension;
+            }            
+            
+        }
+
+        if(drawRect2){
+            g.drawRect(600,400,200,200);
+            //blue
+            g.setColor(new Color(32, 58, 89));
+            int totalIndividuals = popSize2;
+            int dimension = (int)Math.sqrt(40000/popSize);
+            int numInOneRow = 200/dimension;
+            int domPix = (int)(totalIndividuals*p2);
+            int recPix = (int)(totalIndividuals*q2);
+            int numDomRows = domPix/numInOneRow;
+            int numRecRows = recPix/numInOneRow;
+            int xVar = 1000;
+            int yVar = 400;
+            for (int i=0; i<numDomRows; i++){
+                g.fillRect(xVar,yVar, 200, dimension);
+                yVar+=dimension;
+            }
+            for (int i=0; i<domPix%numInOneRow; i++){
+                g.fillRect(xVar, yVar, dimension, dimension);
+                xVar+=dimension;
+            }
+            //red
+            g.setColor(new Color(207, 57, 50));
+            for(int i=0; i<numInOneRow-(domPix%numInOneRow); i++){
+                g.fillRect(xVar,yVar,dimension,dimension);
+                xVar+=dimension;
+            }
+
+            xVar=600;
+            yVar+=dimension;
+            for(int i=0; i<numRecRows; i++){
+                g.fillRect(xVar,yVar, 200, dimension);
+                yVar+=dimension;
+            }           
+        }
+        
+
+
+
+
     }
     public void calculateVals(){
         ArrayList<Integer> tempArray = new ArrayList<Integer>();
@@ -548,7 +627,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             }
         } else if (e.getSource()==geneFlow){
             if(numOfPops==2){
-                if(Double.parseDouble(numFlow12.getText())>0&&Double.parseDouble(numFlow12.getText())<1&&Double.parseDouble(numFlow21.getText())>0&&Double.parseDouble(numFlow21.getText())<1){
+                if(Double.parseDouble(numFlow12.getText())>=0&&Double.parseDouble(numFlow12.getText())<1&&Double.parseDouble(numFlow21.getText())>=0&&Double.parseDouble(numFlow21.getText())<1){
                     int numTransfer1 = (int)(Double.parseDouble(numFlow12.getText())*individuals.size());
                     int numTransfer2 = (int)(Double.parseDouble(numFlow21.getText())*individuals2.size());
                     while(numTransfer1>0&&numTransfer2>0){
@@ -587,6 +666,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 if(p<0||p>1){
                     showBadEntryMessage = true;
                 } else{
+                    drawRect1 = true;
                     popSize =  Integer.parseInt(enterPopSize.getText());
                     totDom = (int)(p*popSize);
                     totRec = (int)(q*popSize);
@@ -610,6 +690,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 if(p2<0||p2>1){
                     showBadEntryMessage = true;
                 } else{
+                    drawRect2 = true;
                     popSize2 =  Integer.parseInt(enterPopSize.getText());
                     //harvey weinburg equation
                     totDom2 = (int)(p2*popSize2);
