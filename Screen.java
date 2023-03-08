@@ -4,6 +4,10 @@ import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Font;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -57,17 +61,23 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private boolean usePop2 = false;
     private boolean drawRect1 = false;
     private boolean drawRect2 = false;
+    private boolean graphView = true;
     //total of each type in the individuals
     private int totDom;
     private int totRec;
     private int totDom2;
     private int totRec2;
+    private int generation;
     //determines whether or not you just natural selected (for display purposes)
     private boolean showPart2 = false;
     private boolean showPart22 = false;
     private boolean showBadEntryMessage = false;
     private boolean showNotEnoughPopsMessage = false;
     private int numOfPops = 0;
+    private int lastyVal1 = 350;
+    private int lastyVal2 = 350;
+    private int lastyVal3 = 350;
+    private int lastyVal4 = 350;
     //makes sure that when you select from the menus it doesn't re-sample
     private JTextField enterP;
     private JTextField enterPopSize;
@@ -84,9 +94,12 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private JButton natSelec;
     private JButton deletePop1;
     private JButton deletePop2;
+    private JButton switchView;
     //individuals is created during natural selection & filled with integers based on the current information in population (1-dom, 2-rec)
     ArrayList<Integer> individuals = new ArrayList<Integer>();
     ArrayList<Integer> individuals2 = new ArrayList<Integer>();
+    //image
+    private BufferedImage graphImage;
     public Screen(){
         setLayout(null);
         setFocusable(true);
@@ -164,6 +177,15 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         deletePop1.addActionListener(this);
         deletePop1.setVisible(false);
 
+        switchView = new JButton();
+        switchView.setFont(new Font("Arial", Font.PLAIN, 15));
+        switchView.setHorizontalAlignment(SwingConstants.CENTER);
+        switchView.setBounds(275, 290, 200, 30);
+        switchView.setText("Switch To Graph View");
+        this.add(switchView);
+        switchView.addActionListener(this);
+        switchView.setVisible(false);
+
         deletePop2 = new JButton();
         deletePop2.setFont(new Font("Arial", Font.PLAIN, 15));
         deletePop2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -198,6 +220,12 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         addPop.setText("Add Population");
         this.add(addPop);
         addPop.addActionListener(this);
+
+        try {
+            graphImage = ImageIO.read(new File("graph.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         addMouseListener(this);
     }
@@ -319,85 +347,115 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 g.drawString("Sampled Number of Recessive Alleles out of " + individuals2.size() + ": " +Integer.toString(randRecNum2),890, 200+75);
             }
         }
-           
-        if(drawRect1){
-            g.drawRect(600,400,200,200);
-            //blue
-            g.setColor(new Color(32, 58, 89));
-            int totalIndividuals = popSize;
-            int dimension = (int)Math.sqrt(40000/popSize);
-            int numInOneRow = 200/dimension;
-            int domPix = (int)(totalIndividuals*p);
-            int recPix = (int)(totalIndividuals*q);
-            int numDomRows = domPix/numInOneRow;
-            int numRecRows = recPix/numInOneRow;
-            int xVar = 600;
-            int yVar = 400;
-            for (int i=0; i<numDomRows; i++){
-                g.fillRect(xVar,yVar, 200, dimension);
-                yVar+=dimension;
-            }
-            for (int i=0; i<domPix%numInOneRow; i++){
-                g.fillRect(xVar, yVar, dimension, dimension);
-                xVar+=dimension;
-            }
-            //red
-            g.setColor(new Color(207, 57, 50));
-            for(int i=0; i<numInOneRow-(domPix%numInOneRow); i++){
-                g.fillRect(xVar,yVar,dimension,dimension);
-                xVar+=dimension;
-            }
-
-            xVar=600;
-            yVar+=dimension;
-            for(int i=0; i<numRecRows; i++){
-                g.fillRect(xVar,yVar, 200, dimension);
-                yVar+=dimension;
-            }            
+        if (graphView){
+            g.setColor(Color.black);
+            //axis 
+            g.drawLine(350,375,350,575);
+            g.drawLine(350,575,1250,575);
+            g.drawLine(350,375,360,385);
+            g.drawLine(340,385,350,375);
+            g.drawLine(1250,575,1240,585);
+            g.drawLine(1240,565,1250,575);
             
+            g.drawImage(graphImage,350,325,null);
+            
+            if(drawRect1){
+                int yVal1 = (int)(200-(p*100*2)+375);
+                int xVal = generation*60;
+
+                int yVal2 = (int)(200-(q*100*2)+375);
+                g.setColor(new Color(32, 58, 89));
+                g.drawOval(xVal, yVal1, 5,5);
+                g.setColor(new Color(207, 57, 50));                
+                g.drawOval(xVal, yVal2, 5,5);
+
+            } else{
+
+            }
         }
+        if(graphView==false){  
+            if(drawRect1){
+                //key
+                g.setColor(Color.black);
+                g.drawString("dominant allele: ",415,400); 
+                g.setColor(new Color(32, 58, 89));
+                g.fillRect(505,390,8,8);
+                g.setColor(Color.black);
+                g.drawString("recessive allele: ",415,420); 
+                g.setColor(new Color(207, 57, 50));
+                g.fillRect(505,410,8,8);
+                //blue
+                g.setColor(new Color(32, 58, 89));
+                int totalIndividuals = popSize;
+                int dimension = (int)Math.sqrt(40000/popSize);
+                int numInOneRow = 200/dimension;
+                int domPix = (int)(totalIndividuals*p);
+                int recPix = (int)(totalIndividuals*q);
+                int numDomRows = domPix/numInOneRow;
+                int numRecRows = recPix/numInOneRow;
+                int xVar = 550;
+                int yVar = 400;
+                for (int i=0; i<numDomRows; i++){
+                    g.fillRect(xVar,yVar, 200, dimension);
+                    yVar+=dimension;
+                }
+                for (int i=0; i<domPix%numInOneRow; i++){
+                    g.fillRect(xVar, yVar, dimension, dimension);
+                    xVar+=dimension;
+                }
+                //red
+                g.setColor(new Color(207, 57, 50));
+                for(int i=0; i<numInOneRow-(domPix%numInOneRow); i++){
+                    g.fillRect(xVar,yVar,dimension,dimension);
+                    xVar+=dimension;
+                }
 
-        if(drawRect2){
-            g.drawRect(600,400,200,200);
-            //blue
-            g.setColor(new Color(32, 58, 89));
-            int totalIndividuals = popSize2;
-            int dimension = (int)Math.sqrt(40000/popSize);
-            int numInOneRow = 200/dimension;
-            int domPix = (int)(totalIndividuals*p2);
-            int recPix = (int)(totalIndividuals*q2);
-            int numDomRows = domPix/numInOneRow;
-            int numRecRows = recPix/numInOneRow;
-            int xVar = 1000;
-            int yVar = 400;
-            for (int i=0; i<numDomRows; i++){
-                g.fillRect(xVar,yVar, 200, dimension);
+                xVar=550;
                 yVar+=dimension;
-            }
-            for (int i=0; i<domPix%numInOneRow; i++){
-                g.fillRect(xVar, yVar, dimension, dimension);
-                xVar+=dimension;
-            }
-            //red
-            g.setColor(new Color(207, 57, 50));
-            for(int i=0; i<numInOneRow-(domPix%numInOneRow); i++){
-                g.fillRect(xVar,yVar,dimension,dimension);
-                xVar+=dimension;
+                for(int i=0; i<numRecRows; i++){
+                    g.fillRect(xVar,yVar, 200, dimension);
+                    yVar+=dimension;
+                }            
+                
             }
 
-            xVar=600;
-            yVar+=dimension;
-            for(int i=0; i<numRecRows; i++){
-                g.fillRect(xVar,yVar, 200, dimension);
+            if(drawRect2){
+                //blue
+                g.setColor(new Color(32, 58, 89));
+                int totalIndividuals = popSize2;
+                int dimension = (int)Math.sqrt(40000/popSize);
+                int numInOneRow = 200/dimension;
+                int domPix = (int)(totalIndividuals*p2);
+                int recPix = (int)(totalIndividuals*q2);
+                int numDomRows = domPix/numInOneRow;
+                int numRecRows = recPix/numInOneRow;
+                int xVar = 900;
+                int yVar = 400;
+                for (int i=0; i<numDomRows; i++){
+                    g.fillRect(xVar,yVar, 200, dimension);
+                    yVar+=dimension;
+                }
+                for (int i=0; i<domPix%numInOneRow; i++){
+                    g.fillRect(xVar, yVar, dimension, dimension);
+                    xVar+=dimension;
+                }
+                //red
+                g.setColor(new Color(207, 57, 50));
+                for(int i=0; i<numInOneRow-(domPix%numInOneRow); i++){
+                    g.fillRect(xVar,yVar,dimension,dimension);
+                    xVar+=dimension;
+                }
+
+                xVar=900;
                 yVar+=dimension;
-            }           
+                for(int i=0; i<numRecRows; i++){
+                    g.fillRect(xVar,yVar, 200, dimension);
+                    yVar+=dimension;
+                }           
+            }
         }
-        
-
-
-
-
     }
+    
     public void calculateVals(){
         ArrayList<Integer> tempArray = new ArrayList<Integer>();
         tempArray = individuals;
@@ -432,7 +490,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         p2 = (1.0*totDom2)/popSize2;
         q2 = (1.0*totRec2)/popSize2;
     }
-
+    
     public void actionPerformed(ActionEvent e ){
         showBadEntryMessage = false;
         showNotEnoughPopsMessage = false;
@@ -461,6 +519,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 }
                 showPart2 = true;
                 calculateVals();
+                generation++;
             }
             if (usePop2){
                 sampleNum = Integer.parseInt(enterSampleNum.getText());
@@ -487,6 +546,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 }
                 showPart22 = true;
                 calculateVals2();
+                generation++;
             }
            
         }  else if (e.getSource() == replace){
@@ -517,6 +577,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 // replacement type from natural selection
                 showPart2=true;
                 calculateVals();
+                generation++;
             }
             if (usePop2){
                 sampleNum = Integer.parseInt(enterSampleNum.getText());
@@ -545,6 +606,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 calculateVals2();
                 // replacement type from natural selection
                 showPart22=true;
+                generation++;
             }
         } else if (e.getSource() == natSelec){
             if (usePop1){
@@ -683,6 +745,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                     numOfPops++;
                     deletePop1.setVisible(true);
                 }
+                switchView.setVisible(true);
             } else if (numOfPops==1){
                 individuals2.clear();
                 p2 = Double.parseDouble(enterP.getText());
@@ -721,6 +784,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 numOfPops--;
                 valsSet = false;
                 addPop.setVisible(true);
+                drawRect1 = false;
+                switchView.setVisible(false);
             } else if (numOfPops==2){
                 for(int i=0;i<individuals2.size();i++){
                     individuals.add(individuals2.get(i));
@@ -737,6 +802,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 p=p2;
                 q=q2;
                 addPop.setVisible(true);
+                drawRect2=false;
             }
         } else if (e.getSource()==deletePop2){
             for(int i=0;i<individuals2.size();i++){
@@ -746,6 +812,15 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             numOfPops--;
             valsSet2 = false;
             addPop.setVisible(true);
+            drawRect2 = false;
+        } else if (e.getSource()==switchView){
+            if(graphView){
+                graphView = false;
+                switchView.setText("Switch to Graph View");
+            } else {
+                graphView = true;
+                switchView.setText("Switch to Color View");
+            }
         }
        repaint();
     }  
@@ -812,92 +887,4 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         }
         repaint();
     }
-
-
-/*
-    public void reproduce(){
-        if(selecGeneFlow==true&&usePop1==true&&usePop2==true){
-            int numTransfer1 = (int)(Double.parseDouble(numFlow12.getText())*individuals.size());
-            int numTransfer2 = (int)(Double.parseDouble(numFlow21.getText())*individuals2.size());
-            System.out.println(numTransfer1);
-            System.out.println(numTransfer2);
-            while(numTransfer1>0&&numTransfer2>0){
-                int randoNumber = (int)(Math.random()*individuals.size());
-                int randoNumber2 = (int)(Math.random()*individuals2.size());
-                individuals2.add(individuals.remove(randoNumber));
-                individuals.add(individuals2.remove(randoNumber2));
-                numTransfer1--;
-                numTransfer2--;
-            }
-            if(numTransfer1>0){
-                for(int i=0;i<numTransfer1;i++){
-                    int randoNumber = (int)(Math.random()*individuals.size());
-                    individuals2.add(individuals.remove(randoNumber));
-                }
-            } else if (numTransfer2>0){
-                for(int i=0;i<numTransfer2;i++){
-                    int randoNumber = (int)(Math.random()*individuals2.size());
-                    individuals.add(individuals2.remove(randoNumber));
-                }
-            }
-            System.out.println(individuals.size());
-            System.out.println(individuals2.size());
-        }
-        if (usePop1){
-            startSpot = 0;
-            ArrayList<Individual> tempArray;
-            tempArray = new ArrayList<Individual>();
-            for(int i=0;i<individuals.size();i++){
-                tempArray.add(individuals.get(i));
-            }
-            if(tempArray.size()%2==1){
-                startSpot=1;
-            }
-           
-            for(int i=startSpot; i<tempArray.size();i+=2){
-                if(tempArray.size()>1){
-                    int rand1 = (int)(Math.random()*tempArray.size());
-                    int rand2 = (int)(Math.random()*(tempArray.size()-1));
-                    while(rand1==rand2){
-                        rand1 = (int)(Math.random()*tempArray.size());
-                    }
-                    individuals.add(new Individual(tempArray.get(rand1).returnRandAl(),tempArray.get(rand2).returnRandAl()));
-                   
-                    tempArray.remove(rand1);
-                    tempArray.remove(rand2);
-                    i-=2;
-                }
-            }
-            calculateVals();
-        }
-        if (usePop2){
-            startSpot = 0;
-            ArrayList<Individual> tempArray;
-            tempArray = new ArrayList<Individual>();
-            for(int i=0;i<individuals2.size();i++){
-                tempArray.add(individuals2.get(i));
-            }
-            if(individuals2.size()%2==1){
-                startSpot=1;
-            }
-           
-            for(int i=startSpot; i<tempArray.size();i+=2){
-                if(tempArray.size()>1){
-                    int rand1 = (int)(Math.random()*tempArray.size());
-                    int rand2 = (int)(Math.random()*(tempArray.size()-1));
-                    while(rand1==rand2){
-                        rand1 = (int)(Math.random()*tempArray.size());
-                    }
-                    individuals2.add(new Individual(tempArray.get(rand1).returnRandAl(),tempArray.get(rand2).returnRandAl()));
-                   
-                    tempArray.remove(rand1);
-                    tempArray.remove(rand2);
-                    i-=2;
-                }
-            }
-            calculateVals2();
-        }
-        repaint();
-    }
-    */
 }
