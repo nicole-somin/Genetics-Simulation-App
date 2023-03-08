@@ -18,7 +18,6 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.SwingConstants;
 
-
 public class Screen extends JPanel implements ActionListener, MouseListener{
     //ratio of dominant vs reccessive genes
     private double p;
@@ -74,10 +73,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private boolean showBadEntryMessage = false;
     private boolean showNotEnoughPopsMessage = false;
     private int numOfPops = 0;
-    private int lastyVal1 = 350;
-    private int lastyVal2 = 350;
-    private int lastyVal3 = 350;
-    private int lastyVal4 = 350;
     //makes sure that when you select from the menus it doesn't re-sample
     private JTextField enterP;
     private JTextField enterPopSize;
@@ -100,6 +95,11 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     ArrayList<Integer> individuals2 = new ArrayList<Integer>();
     //image
     private BufferedImage graphImage;
+    //graph arrays
+    int[] domArray = new int[46];
+    int[] recArray = new int[46];
+    int[] domArray2 = new int[46];
+    int[] recArray2 = new int[46];
     public Screen(){
         setLayout(null);
         setFocusable(true);
@@ -349,28 +349,107 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         }
         if (graphView){
             g.setColor(Color.black);
+            //g.drawImage(graphImage,330,367,null);
             //axis 
-            g.drawLine(350,375,350,575);
-            g.drawLine(350,575,1250,575);
-            g.drawLine(350,375,360,385);
-            g.drawLine(340,385,350,375);
+            g.drawLine(330,355,330,575);
+            g.drawLine(330,575,1250,575);
+            
+            g.drawLine(330,355,340,365);
+            g.drawLine(320,365,330,355);
             g.drawLine(1250,575,1240,585);
             g.drawLine(1240,565,1250,575);
             
-            g.drawImage(graphImage,350,325,null);
-            
+            int xLine = 330;
+            int yLine = 375;
+            for(int i=0; i<11;i++){
+                g.setColor(new Color(0,0,0,75));
+                g.drawLine(330, yLine, 1230, yLine);
+                yLine+=20;
+            }
+            for(int i=0; i<46; i++){
+                g.drawLine(xLine, 575, xLine, 375);
+                xLine+=20;
+            }
+
             if(drawRect1){
-                int yVal1 = (int)(200-(p*100*2)+375);
-                int xVal = generation*60;
-
-                int yVal2 = (int)(200-(q*100*2)+375);
+                //key
+                g.setColor(Color.black);
+                g.drawString("population 1", 215,390);
+                g.drawString("dominant allele: ",215,400); 
                 g.setColor(new Color(32, 58, 89));
-                g.drawOval(xVal, yVal1, 5,5);
-                g.setColor(new Color(207, 57, 50));                
-                g.drawOval(xVal, yVal2, 5,5);
-
-            } else{
-
+                g.fillRect(215,405,8,8);
+                g.setColor(Color.black);
+                g.drawString("recessive allele: ",215,430); 
+                g.setColor(new Color(207, 57, 50));
+                g.fillRect(215,435,8,8);
+                //graph
+                g.setColor(Color.black);
+                int yVal1 = (int)(200-(p*100*2)+375);
+                int yVal2 = (int)(200-(q*100*2)+375);
+                if(generation<46){
+                    domArray[generation] = yVal1;
+                    recArray[generation] = yVal2;
+                    for(int i=0; i<=generation; i++){
+                        if(domArray[i]!=0){
+                            g.setColor(new Color(32, 58, 89));
+                            g.fillOval(i*20+328, domArray[i], 5,5);
+                        }
+                        if(recArray[i]!=0){
+                            g.setColor(new Color(207, 57, 50));                
+                            g.fillOval(i*20+328, recArray[i], 5,5);
+                        }
+                    }
+                } else {
+                    for(int i=0; i<46; i++){
+                        if(domArray[i]!=0){
+                            g.setColor(new Color(32, 58, 89));
+                            g.fillOval(i*20+328, domArray[i], 5,5);
+                        }
+                        if(recArray[i]!=0){
+                            g.setColor(new Color(207, 57, 50));                
+                            g.fillOval(i*20+328, recArray[i], 5,5);
+                        }
+                    }
+                }
+            } if(drawRect2){
+                g.setColor(Color.black);
+                g.drawString("population 2", 215,490);
+                g.drawString("dominant allele: ",215,400+100); 
+                g.setColor(new Color(176, 92, 237));
+                g.fillRect(215,405+100,8,8);
+                g.setColor(Color.black);
+                g.drawString("recessive allele: ",215,430+100); 
+                g.setColor(new Color(141, 194, 124));
+                g.fillRect(215,435+100,8,8);
+                //graph
+                g.setColor(Color.black);
+                int yVal1 = (int)(200-(p2*100*2)+375);
+                int yVal2 = (int)(200-(q2*100*2)+375);
+                if(generation<46){
+                    domArray2[generation] = yVal1;
+                    recArray2[generation] = yVal2;
+                    for(int i=0; i<=generation; i++){
+                        if(domArray2[i]!=0){
+                            g.setColor(new Color(176, 92, 237));
+                            g.fillOval(i*20+328, domArray2[i], 5,5);
+                        }
+                        if(recArray2[i]!=0){
+                            g.setColor(new Color(141, 194, 124));             
+                            g.fillOval(i*20+328, recArray2[i], 5,5);
+                        }
+                    }
+                } else {
+                    for(int i=0; i<46; i++){
+                        if(domArray2[i]!=0){
+                            g.setColor(new Color(176, 92, 237));
+                            g.fillOval(i*20+328, domArray2[i], 5,5);
+                        }
+                        if(recArray2[i]!=0){
+                            g.setColor(new Color(141, 194, 124));        
+                            g.fillOval(i*20+328, recArray2[i], 5,5);
+                        }
+                    }
+                }
             }
         }
         if(graphView==false){  
@@ -746,6 +825,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                     deletePop1.setVisible(true);
                 }
                 switchView.setVisible(true);
+                generation = 0;
             } else if (numOfPops==1){
                 individuals2.clear();
                 p2 = Double.parseDouble(enterP.getText());
@@ -786,6 +866,9 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 addPop.setVisible(true);
                 drawRect1 = false;
                 switchView.setVisible(false);
+                generation = 0;
+                domArray = new int[15];
+                recArray = new int[15];
             } else if (numOfPops==2){
                 for(int i=0;i<individuals2.size();i++){
                     individuals.add(individuals2.get(i));
@@ -803,6 +886,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 q=q2;
                 addPop.setVisible(true);
                 drawRect2=false;
+                domArray = new int[15];
+                recArray = new int[15];
             }
         } else if (e.getSource()==deletePop2){
             for(int i=0;i<individuals2.size();i++){
@@ -813,6 +898,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             valsSet2 = false;
             addPop.setVisible(true);
             drawRect2 = false;
+            domArray2 = new int[15];
+            recArray2 = new int[15];
         } else if (e.getSource()==switchView){
             if(graphView){
                 graphView = false;
