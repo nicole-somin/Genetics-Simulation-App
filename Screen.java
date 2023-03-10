@@ -3,11 +3,11 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Font;
-
+/* 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import javax.imageio.ImageIO;
+import javax.imageio.ImageIO;*/
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -17,6 +17,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.SwingConstants;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+
 
 public class Screen extends JPanel implements ActionListener, MouseListener{
     //ratio of dominant vs reccessive genes
@@ -72,6 +75,18 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     private boolean showPart22 = false;
     private boolean showBadEntryMessage = false;
     private boolean showNotEnoughPopsMessage = false;
+    private boolean addToArray = true;
+    private boolean wrongDataNull = false;
+    private boolean wrongDataSize = false;
+    private boolean wrongDataNullNatSelec = false;
+    private boolean wrongDataSizeNatSelec = false;
+    private boolean entryNullGeneFlow = false;
+    private boolean showBadEntryMessageGeneFlow = false;
+    private boolean wrongDataNullPop = false;
+    private boolean wrongDataSizePop = false;
+    private boolean wrongDataNullP = false;
+    private boolean noPopSelec = false;
+    private boolean noTypeSelec = false;
     private int numOfPops = 0;
     //makes sure that when you select from the menus it doesn't re-sample
     private JTextField enterP;
@@ -93,8 +108,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     //individuals is created during natural selection & filled with integers based on the current information in population (1-dom, 2-rec)
     ArrayList<Integer> individuals = new ArrayList<Integer>();
     ArrayList<Integer> individuals2 = new ArrayList<Integer>();
-    //image
-    private BufferedImage graphImage;
     //graph arrays
     int[] domArray = new int[46];
     int[] recArray = new int[46];
@@ -181,7 +194,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         switchView.setFont(new Font("Arial", Font.PLAIN, 15));
         switchView.setHorizontalAlignment(SwingConstants.CENTER);
         switchView.setBounds(275, 290, 200, 30);
-        switchView.setText("Switch To Graph View");
+        switchView.setText("Switch To Color View");
         this.add(switchView);
         switchView.addActionListener(this);
         switchView.setVisible(false);
@@ -221,12 +234,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         this.add(addPop);
         addPop.addActionListener(this);
 
-        try {
-            graphImage = ImageIO.read(new File("graph.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         addMouseListener(this);
     }
 
@@ -262,14 +269,54 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         g.drawString("you're sampling", 277,410-250);
 
         g.setColor(Color.RED);
+        if (wrongDataNull){
+            g.drawString("Please enter a number here",277,115);
+        }
+        if (wrongDataSize){
+            g.drawString("Please enter a number greater than",277,115);
+            g.drawString("0 and less than the population",277,130);
+        }
+        if (wrongDataNullNatSelec){
+            g.drawString("Please enter a number here",15,415);
+        }
+        if (wrongDataSizeNatSelec){
+            g.drawString("Please enter a number greater than",15,415);
+            g.drawString("or equal to 0 and less than 1",15,430);
+        }
+        if (wrongDataNullPop){
+            g.drawString("Please enter a number here",15,200);
+        }
+        if (wrongDataSizePop){
+            g.drawString("Please enter a number greater than 1", 15, 200);
+        }
         if(showBadEntryMessage){
-            g.drawString("Please enter a number greater than", 305, 350);
-            g.drawString("or equal to 0 and less than 1", 327, 370);
+            g.drawString("Please enter a number greater than", 5, 200);
+            g.drawString("or equal to 0 and less than 1", 15, 215);
         } 
         if(showNotEnoughPopsMessage){
-            g.drawString("You must have two populations",305,350);
-            g.drawString("to do gene flow",350,370);
+            g.drawString("You must have two populations",5,625);
+            g.drawString("to do gene flow",18,637);
         }
+        if(showBadEntryMessageGeneFlow){
+            g.drawString("Please enter a number greater than",5,625);
+            g.drawString("or equal to 0 and less than 1",15,637);
+        } 
+        if(entryNullGeneFlow){
+           g.drawString("Please enter a number here",15,630);
+        }
+        
+        if(wrongDataNullP){
+            g.drawString("Please enter a number here", 15, 200);
+        }
+
+        if(noPopSelec){
+            g.drawString("Please select a population",277,120);
+        }
+        
+        if(noTypeSelec){
+            g.drawString("Please enter a type to kill", 15, 415);
+        }
+        
         g.setColor(Color.BLACK);
        
         // select menus
@@ -313,9 +360,9 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             g.drawString("Population Size: " + String.valueOf(popSize), 545, 50);
             g.drawString("Ratio of Dominant Alleles: " + Double.toString(Math.floor(p*1000)/1000),545, 75);
             g.drawString("Ratio of Recessive Alleles: " + Double.toString(Math.floor(q*1000)/1000),545, 100);
-            g.drawString("Predicted Number of AA by Harvey Weinberg: " + Integer.toString((int)(p*p*popSize*1.0)), 545, 125);
-            g.drawString("Predicted Number of Aa by Harvey Weinberg: " + Integer.toString((int)(p*q*popSize*2.0)), 545, 150);
-            g.drawString("Predicted Number of aa by Harvey Weinberg: " + Integer.toString((int)(q*q*popSize*1.0)), 545, 175);
+            g.drawString("Predicted Number of AA by Hardy Weinberg: " + Integer.toString((int)(p*p*popSize*1.0)), 545, 125);
+            g.drawString("Predicted Number of Aa by Hardy Weinberg: " + Integer.toString((int)(p*q*popSize*2.0)), 545, 150);
+            g.drawString("Predicted Number of aa by Hardy Weinberg: " + Integer.toString((int)(q*q*popSize*1.0)), 545, 175);
 
             if(showPart2 == true){
                 deletePop1.setBounds(545, 295, 120, 30);
@@ -334,9 +381,9 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             g.drawString("Population Size: " + String.valueOf(popSize2), 890, 50);
             g.drawString("Ratio of Dominant Alleles: " + Double.toString(Math.floor(p2*1000)/1000),890, 75);
             g.drawString("Ratio of Recessive Alleles: " + Double.toString(Math.floor(q2*1000)/1000),890, 100);
-            g.drawString("Predicted Number of AA by Harvey Weinberg: " + Integer.toString((int)(p2*p2*popSize2*1.0)), 890, 125);
-            g.drawString("Predicted Number of Aa by Harvey Weinberg: " + Integer.toString((int)(p2*q2*popSize2*2.0)), 890, 150);
-            g.drawString("Predicted Number of aa by Harvey Weinberg: " + Integer.toString((int)(q2*q2*popSize2*1.0)), 890, 175);
+            g.drawString("Predicted Number of AA by Hardy Weinberg: " + Integer.toString((int)(p2*p2*popSize2*1.0)), 890, 125);
+            g.drawString("Predicted Number of Aa by Hardy Weinberg: " + Integer.toString((int)(p2*q2*popSize2*2.0)), 890, 150);
+            g.drawString("Predicted Number of aa by Hardy Weinberg: " + Integer.toString((int)(q2*q2*popSize2*1.0)), 890, 175);
 
 
             if(showPart22 == true){
@@ -364,31 +411,43 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             for(int i=0; i<11;i++){
                 g.setColor(new Color(0,0,0,75));
                 g.drawLine(330, yLine, 1230, yLine);
+                if (i%5 == 0){
+                    g.drawString(1-(double)i/10 + "",310,yLine+3);
+                }
                 yLine+=20;
             }
             for(int i=0; i<46; i++){
                 g.drawLine(xLine, 575, xLine, 375);
+                if (i%5 == 0){
+                    g.drawString(i + "",xLine-6,585);
+                }
                 xLine+=20;
             }
+            g.setColor(Color.black);
+
+
+            g.drawString("Generations",745,615);
 
             if(drawRect1){
                 //key
                 g.setColor(Color.black);
-                g.drawString("population 1", 215,390);
-                g.drawString("dominant allele: ",215,400); 
+                g.drawString("population 1", 215,370);
+                g.drawString("dominant allele: ",215,380); 
                 g.setColor(new Color(32, 58, 89));
-                g.fillRect(215,405,8,8);
+                g.fillRect(215,385,8,8);
                 g.setColor(Color.black);
-                g.drawString("recessive allele: ",215,430); 
+                g.drawString("recessive allele: ",215,410); 
                 g.setColor(new Color(207, 57, 50));
-                g.fillRect(215,435,8,8);
+                g.fillRect(215,415,8,8);
                 //graph
                 g.setColor(Color.black);
-                int yVal1 = (int)(200-(p*100*2)+375);
-                int yVal2 = (int)(200-(q*100*2)+375);
+                int yVal1 = (int)(200-(p*100*2)+372);
+                int yVal2 = (int)(200-(q*100*2)+372);
                 if(generation<46){
-                    domArray[generation] = yVal1;
-                    recArray[generation] = yVal2;
+                    if(addToArray==true){
+                        domArray[generation] = yVal1;
+                        recArray[generation] = yVal2;
+                    }
                     for(int i=0; i<=generation; i++){
                         if(domArray[i]!=0){
                             g.setColor(new Color(32, 58, 89));
@@ -413,21 +472,23 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 }
             } if(drawRect2){
                 g.setColor(Color.black);
-                g.drawString("population 2", 215,490);
-                g.drawString("dominant allele: ",215,400+100); 
+                g.drawString("population 2", 215,550);
+                g.drawString("dominant allele: ",215,400+100+60); 
                 g.setColor(new Color(176, 92, 237));
-                g.fillRect(215,405+100,8,8);
+                g.fillRect(215,405+100+60,8,8);
                 g.setColor(Color.black);
-                g.drawString("recessive allele: ",215,430+100); 
+                g.drawString("recessive allele: ",215,430+100+60); 
                 g.setColor(new Color(141, 194, 124));
-                g.fillRect(215,435+100,8,8);
+                g.fillRect(215,435+100+60,8,8);
                 //graph
                 g.setColor(Color.black);
-                int yVal1 = (int)(200-(p2*100*2)+375);
-                int yVal2 = (int)(200-(q2*100*2)+375);
+                int yVal1 = (int)(200-(p2*100*2)+372);
+                int yVal2 = (int)(200-(q2*100*2)+372);
                 if(generation<46){
-                    domArray2[generation] = yVal1;
-                    recArray2[generation] = yVal2;
+                    if(addToArray==true){
+                        domArray2[generation] = yVal1;
+                        recArray2[generation] = yVal2;
+                    }                   
                     for(int i=0; i<=generation; i++){
                         if(domArray2[i]!=0){
                             g.setColor(new Color(176, 92, 237));
@@ -454,85 +515,49 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         }
         if(graphView==false){  
             if(drawRect1){
-                //key
                 g.setColor(Color.black);
-                g.drawString("dominant allele: ",415,400); 
+                g.drawString("dominant allele: ",415,380); 
                 g.setColor(new Color(32, 58, 89));
+                g.fillRect(505,370,8,8);
+                g.setColor(Color.black);
+                g.drawString("recessive allele: ",415,400); 
+                g.setColor(new Color(207, 57, 50));
                 g.fillRect(505,390,8,8);
-                g.setColor(Color.black);
-                g.drawString("recessive allele: ",415,420); 
-                g.setColor(new Color(207, 57, 50));
-                g.fillRect(505,410,8,8);
-                //blue
+                
+                int domPixelsTall = (int)(p*200);
+                int recPixelsTall = 200-domPixelsTall;
                 g.setColor(new Color(32, 58, 89));
-                int totalIndividuals = popSize;
-                int dimension = (int)Math.sqrt(40000/popSize);
-                int numInOneRow = 200/dimension;
-                int domPix = (int)(totalIndividuals*p);
-                int recPix = (int)(totalIndividuals*q);
-                int numDomRows = domPix/numInOneRow;
-                int numRecRows = recPix/numInOneRow;
-                int xVar = 550;
-                int yVar = 400;
-                for (int i=0; i<numDomRows; i++){
-                    g.fillRect(xVar,yVar, 200, dimension);
-                    yVar+=dimension;
-                }
-                for (int i=0; i<domPix%numInOneRow; i++){
-                    g.fillRect(xVar, yVar, dimension, dimension);
-                    xVar+=dimension;
-                }
-                //red
+                g.fillRect(550,400,200,domPixelsTall);
                 g.setColor(new Color(207, 57, 50));
-                for(int i=0; i<numInOneRow-(domPix%numInOneRow); i++){
-                    g.fillRect(xVar,yVar,dimension,dimension);
-                    xVar+=dimension;
-                }
-
-                xVar=550;
-                yVar+=dimension;
-                for(int i=0; i<numRecRows; i++){
-                    g.fillRect(xVar,yVar, 200, dimension);
-                    yVar+=dimension;
-                }            
+                g.fillRect(550,400+domPixelsTall,200,recPixelsTall);
                 
             }
 
             if(drawRect2){
-                //blue
+                int domPixelsTall = (int)(p2*200);
+                int recPixelsTall = 200-domPixelsTall;
                 g.setColor(new Color(32, 58, 89));
-                int totalIndividuals = popSize2;
-                int dimension = (int)Math.sqrt(40000/popSize);
-                int numInOneRow = 200/dimension;
-                int domPix = (int)(totalIndividuals*p2);
-                int recPix = (int)(totalIndividuals*q2);
-                int numDomRows = domPix/numInOneRow;
-                int numRecRows = recPix/numInOneRow;
-                int xVar = 900;
-                int yVar = 400;
-                for (int i=0; i<numDomRows; i++){
-                    g.fillRect(xVar,yVar, 200, dimension);
-                    yVar+=dimension;
-                }
-                for (int i=0; i<domPix%numInOneRow; i++){
-                    g.fillRect(xVar, yVar, dimension, dimension);
-                    xVar+=dimension;
-                }
-                //red
+                g.fillRect(900,400,200,domPixelsTall);
                 g.setColor(new Color(207, 57, 50));
-                for(int i=0; i<numInOneRow-(domPix%numInOneRow); i++){
-                    g.fillRect(xVar,yVar,dimension,dimension);
-                    xVar+=dimension;
-                }
-
-                xVar=900;
-                yVar+=dimension;
-                for(int i=0; i<numRecRows; i++){
-                    g.fillRect(xVar,yVar, 200, dimension);
-                    yVar+=dimension;
-                }           
+                g.fillRect(900,400+domPixelsTall,200,recPixelsTall);          
             }
         }
+
+        if (graphView){
+            g.setFont(new Font("Arial",Font.PLAIN, 18));
+            Graphics2D g2d = (Graphics2D)g;
+            AffineTransform defaultAt = g2d.getTransform();
+            AffineTransform at = new AffineTransform();
+            at.rotate(- Math.PI / 2);
+            g2d.setTransform(at);
+            g.setColor(Color.black);
+            g2d.drawString("Allele Frequency", -785, 440);
+            
+            AffineTransform at2 = AffineTransform.getQuadrantRotateInstance(1);
+            g2d.setTransform(at2);         
+            g2d.setTransform(defaultAt);
+        }
+
     }
     
     public void calculateVals(){
@@ -573,288 +598,389 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     public void actionPerformed(ActionEvent e ){
         showBadEntryMessage = false;
         showNotEnoughPopsMessage = false;
+        wrongDataNull = false;
+        wrongDataSize = false;
+        showBadEntryMessageGeneFlow = false;
+        entryNullGeneFlow = false;
+        wrongDataSizeNatSelec = false;
+        wrongDataNullNatSelec = false;
+        wrongDataNullP = false;
+        wrongDataNullPop = false;
+        wrongDataSizePop = false;
+        noPopSelec = false;
+        noTypeSelec = false;
         if(e.getSource()==noReplace){
+            addToArray = true;
             if (usePop1){
-                sampleNum = Integer.parseInt(enterSampleNum.getText());
-                domNum = (int)(p*sampleNum);
-                recNum = (int)(q*sampleNum);
-                randRecNum = 0;
-                randDomNum = 0;
-                ArrayList<Integer> tempArray = new ArrayList<Integer>();
-                for(int i=0;i<individuals.size();i++){
-                    tempArray.add(individuals.get(i));
-                }        
-                individuals.clear();     
-                for(int i=0; i<sampleNum; i++){
-                    int rand1 = (int)(Math.random()*tempArray.size());
-                    int num = tempArray.get(rand1);
-                    tempArray.remove(rand1);
-                    individuals.add(num);
-                    if(num == 1){
-                        randDomNum++;
-                    } else if(num==2){
-                        randRecNum++;
-                    }
+                if (enterSampleNum.getText().equals("")){
+                    System.out.println("null");
+                    wrongDataNull = true;
                 }
-                showPart2 = true;
-                calculateVals();
-                generation++;
+                else if (Integer.parseInt(enterSampleNum.getText()) < 0 || Integer.parseInt(enterSampleNum.getText()) > popSize){
+                    wrongDataSize = true;
+                }
+                else{
+                    sampleNum = Integer.parseInt(enterSampleNum.getText());
+                    domNum = (int)(p*sampleNum);
+                    recNum = (int)(q*sampleNum);
+                    randRecNum = 0;
+                    randDomNum = 0;
+                    ArrayList<Integer> tempArray = new ArrayList<Integer>();
+                    for(int i=0;i<individuals.size();i++){
+                        tempArray.add(individuals.get(i));
+                    }        
+                    individuals.clear();     
+                    for(int i=0; i<sampleNum; i++){
+                        int rand1 = (int)(Math.random()*tempArray.size());
+                        int num = tempArray.get(rand1);
+                        tempArray.remove(rand1);
+                        individuals.add(num);
+                        if(num == 1){
+                            randDomNum++;
+                        } else if(num==2){
+                            randRecNum++;
+                        }
+                    }
+                    showPart2 = true;
+                    calculateVals();
+                    generation++;
+                }
             }
             if (usePop2){
-                sampleNum = Integer.parseInt(enterSampleNum.getText());
-                //predicting
-                domNum2 = (int)(p2*sampleNum);
-                recNum2 = (int)(q2*sampleNum);
-                //prepping for the sampling in paint component
-                randRecNum2=0;
-                randDomNum2=0;
-                ArrayList<Integer> tempArray = new ArrayList<Integer>();
-                for(int i=0;i<individuals2.size();i++){
-                    tempArray.add(individuals2.get(i));
-                } 
-                individuals2.clear();          
-                for(int i=0; i<sampleNum; i++){
-                    int rand1 = (int)(Math.random()*tempArray.size());
-                    int num = tempArray.get(rand1);
-                    individuals2.add(tempArray.remove(rand1));
-                    if(num == 1){
-                        randDomNum2++;
-                    } else if(num==2){
-                        randRecNum2++;
-                    }
+                if (enterSampleNum.getText().equals("")){
+                    wrongDataNull = true;
                 }
-                showPart22 = true;
-                calculateVals2();
-                generation++;
+                else if (Integer.parseInt(enterSampleNum.getText()) < 0 || Integer.parseInt(enterSampleNum.getText()) > popSize2){
+                    wrongDataSize = true;
+                }
+                else{
+                    sampleNum = Integer.parseInt(enterSampleNum.getText());
+                    //predicting
+                    domNum2 = (int)(p2*sampleNum);
+                    recNum2 = (int)(q2*sampleNum);
+                    //prepping for the sampling in paint component
+                    randRecNum2=0;
+                    randDomNum2=0;
+                    ArrayList<Integer> tempArray = new ArrayList<Integer>();
+                    for(int i=0;i<individuals2.size();i++){
+                        tempArray.add(individuals2.get(i));
+                    } 
+                    individuals2.clear();          
+                    for(int i=0; i<sampleNum; i++){
+                        int rand1 = (int)(Math.random()*tempArray.size());
+                        int num = tempArray.get(rand1);
+                        individuals2.add(tempArray.remove(rand1));
+                        if(num == 1){
+                            randDomNum2++;
+                        } else if(num==2){
+                            randRecNum2++;
+                        }
+                    }
+                    showPart22 = true;
+                    calculateVals2();
+                    generation++;
+                }
+            }
+            if (usePop1 == false && usePop2 == false){
+                noPopSelec = true;
             }
            
         }  else if (e.getSource() == replace){
+            addToArray = true;
             if (usePop1){
-                sampleNum = Integer.parseInt(enterSampleNum.getText());
-                //predicting
-                domNum = (int)(p*sampleNum);
-                recNum = (int)(q*sampleNum);
-                //prepping for the sampling in paint component
-                randDomNum=0;
-                randRecNum=0;
-                for(int i=0; i<sampleNum; i++){
-                    int rand1 = (int)(Math.random()*individuals.size());
-                    int num = individuals.get(rand1);
-                    if(num == 1){
-                        randDomNum++;
-                    } else if(num==2){
-                        randRecNum++;
+                if (enterSampleNum.getText().equals("")){
+                    wrongDataNull = true;
+                }
+                else if (Integer.parseInt(enterSampleNum.getText()) < 0 || Integer.parseInt(enterSampleNum.getText()) > popSize){
+                    wrongDataSize = true;
+                }
+                else{
+                    sampleNum = Integer.parseInt(enterSampleNum.getText());
+                    //predicting
+                    domNum = (int)(p*sampleNum);
+                    recNum = (int)(q*sampleNum);
+                    //prepping for the sampling in paint component
+                    randDomNum=0;
+                    randRecNum=0;
+                    for(int i=0; i<sampleNum; i++){
+                        int rand1 = (int)(Math.random()*individuals.size());
+                        int num = individuals.get(rand1);
+                        if(num == 1){
+                            randDomNum++;
+                        } else if(num==2){
+                            randRecNum++;
+                        }
                     }
+                    individuals.clear();
+                    for(int i=0; i<randDomNum;i++){
+                        individuals.add(1);
+                    }
+                    for(int i=0; i<randRecNum;i++){
+                        individuals.add(2);
+                    }
+                    // replacement type from natural selection
+                    showPart2=true;
+                    calculateVals();
+                    generation++;
                 }
-                individuals.clear();
-                for(int i=0; i<randDomNum;i++){
-                    individuals.add(1);
-                }
-                for(int i=0; i<randRecNum;i++){
-                    individuals.add(2);
-                }
-                // replacement type from natural selection
-                showPart2=true;
-                calculateVals();
-                generation++;
             }
             if (usePop2){
-                sampleNum = Integer.parseInt(enterSampleNum.getText());
-                //predicting
-                domNum2 = (int)(p2*sampleNum);
-                recNum2 = (int)(q2*sampleNum);
-                //prepping for the sampling in paint component
-                randDomNum2=0;
-                randRecNum2=0;
-                for(int i=0; i<sampleNum; i++){
-                    int rand1 = (int)(Math.random()*individuals2.size());
-                    int num = individuals2.get(rand1);
-                    if(num == 1){
-                        randDomNum2++;
-                    } else if(num==2){
-                        randRecNum2++;
+                if (enterSampleNum.getText().equals("")){
+                    wrongDataNull = true;
+                }
+                else if (Integer.parseInt(enterSampleNum.getText()) < 0 || Integer.parseInt(enterSampleNum.getText()) > popSize2){
+                    wrongDataSize = true;
+                }
+                else{
+                    sampleNum = Integer.parseInt(enterSampleNum.getText());
+                    //predicting
+                    domNum2 = (int)(p2*sampleNum);
+                    recNum2 = (int)(q2*sampleNum);
+                    //prepping for the sampling in paint component
+                    randDomNum2=0;
+                    randRecNum2=0;
+                    for(int i=0; i<sampleNum; i++){
+                        int rand1 = (int)(Math.random()*individuals2.size());
+                        int num = individuals2.get(rand1);
+                        if(num == 1){
+                            randDomNum2++;
+                        } else if(num==2){
+                            randRecNum2++;
+                        }
                     }
+                    individuals2.clear();
+                    for(int i=0; i<randDomNum2;i++){
+                        individuals2.add(1);
+                    }
+                    for(int i=0; i<randRecNum2;i++){
+                        individuals2.add(2);
+                    }
+                    calculateVals2();
+                    // replacement type from natural selection
+                    showPart22=true;
+                    generation++;
                 }
-                individuals2.clear();
-                for(int i=0; i<randDomNum2;i++){
-                    individuals2.add(1);
-                }
-                for(int i=0; i<randRecNum2;i++){
-                    individuals2.add(2);
-                }
-                calculateVals2();
-                // replacement type from natural selection
-                showPart22=true;
-                generation++;
+                
+            }
+            if (usePop1 == false && usePop2 == false){
+                noPopSelec = true;
             }
         } else if (e.getSource() == natSelec){
-            if (usePop1){
+            if (enterNatSelecVal.getText().equals("")){
+                wrongDataNullNatSelec = true;
+            }
+            else if (Double.parseDouble(enterNatSelecVal.getText()) < 0 || Double.parseDouble(enterNatSelecVal.getText()) > 1){
+                wrongDataSizeNatSelec = true;
+            }
+            else{
+                double selecRat = Double.parseDouble(enterNatSelecVal.getText());
+                
+                if (usePop1){
+                    //determining the total number of each type of individual
+                    totDom = 0;
+                    totRec = 0;
+                    for(int i=0; i<individuals.size();i++){
+                        if(individuals.get(i).equals(1)){
+                            totDom++;
+                        } else if (individuals.get(i).equals(2)){
+                            totRec++;
+                        }
+                    }
+                    
+                    if(selecDom){
+                        totDom = totDom - (int)(totDom*selecRat);
+                    }
+                    if(selecRec){
+                        totRec = totRec - (int)(totRec*selecRat);
+                    }
+                    if (selecHet){
+                        double selecNum = selecRat/2;
+                        totDom = totDom-(int)(totDom*selecNum);
+                        totRec = totRec-(int)(totRec*selecNum);
+                    }
+                    if (selecDom == false && selecRec == false && selecHet == false){
+                        noTypeSelec = true;
+                    }
+                    popSize = totDom + totRec;
+
+
+                    p = 1.0*totDom/popSize;
+                    q = 1.0*totRec/popSize;
+                    individuals.clear();
+
+
+                    for(int i=0; i<totDom; i++){
+                        individuals.add(1);
+                    }
+        
+                    for(int i=0;i<totRec;i++){
+                        individuals.add(2);
+                    }
+                        
+                    randRecNum=0;
+                    randDomNum=0;
+                    valsSet = true;
+                    showPart2 = false;
+                }
+                if (usePop2){
                 //determining the total number of each type of individual
-                totDom = 0;
-                totRec = 0;
-                for(int i=0; i<individuals.size();i++){
-                    if(individuals.get(i).equals(1)){
-                        totDom++;
-                    } else if (individuals.get(i).equals(2)){
-                        totRec++;
+                totDom2 = 0;
+                totRec2 = 0;
+                    for(int i=0; i<individuals2.size();i++){
+                        if(individuals2.get(i).equals(1)){
+                            totDom2++;
+                        } else if (individuals2.get(i).equals(2)){
+                            totRec2++;
+                        }
                     }
-                }
-                double selecRat = Double.parseDouble(enterNatSelecVal.getText());
-                if(selecDom){
-                    totDom = totDom - (int)(totDom*selecRat);
-                }
-                if(selecRec){
-                    totRec = totRec - (int)(totRec*selecRat);
-                }
-                popSize = totDom + totRec;
-
-
-                p = 1.0*totDom/popSize;
-                q = 1.0*totRec/popSize;
-                individuals.clear();
-
-
-                for(int i=0; i<totDom; i++){
-                    individuals.add(1);
-                }
-    
-                for(int i=0;i<totRec;i++){
-                    individuals.add(2);
-                }
-                      
-                randRecNum=0;
-                randDomNum=0;
-                valsSet = true;
-                showPart2 = false;
-            }
-            if (usePop2){
-               //determining the total number of each type of individual
-               totDom2 = 0;
-               totRec2 = 0;
-                for(int i=0; i<individuals2.size();i++){
-                    if(individuals2.get(i).equals(1)){
-                        totDom2++;
-                    } else if (individuals2.get(i).equals(2)){
-                        totRec2++;
+                    if(selecDom2){
+                        totDom2 = totDom2 - (int)(totDom2*selecRat);
                     }
-                }
-                double selecRat = Double.parseDouble(enterNatSelecVal.getText());
-                if(selecDom2){
-                    totDom2 = totDom2 - (int)(totDom2*selecRat);
-                }
-                if(selecRec){
-                    totRec2 = totRec2 - (int)(totRec2*selecRat);
-                }
-                popSize2 = totDom2 + totRec2;
+                    if(selecRec2){
+                        totRec2 = totRec2 - (int)(totRec2*selecRat);
+                    }
+                    if (selecHet2){
+                        double selecNum = selecRat/2;
+                        totDom2 = totDom2 - (int)(totDom * selecNum);
+                        totRec2 = totRec2 - (int)(totRec * selecNum);
+                    }
+                    if (selecDom2 == false && selecRec2 == false && selecHet2 == false){
+                        noTypeSelec = true;
+                    }
+                    popSize2 = totDom2 + totRec2;
 
 
-                p2 = 1.0*totDom2/popSize2;
-                q2 = 1.0*totRec2/popSize2;
-                individuals2.clear();
+                    p2 = 1.0*totDom2/popSize2;
+                    q2 = 1.0*totRec2/popSize2;
+                    individuals2.clear();
 
 
-                for(int i=0; i<totDom2; i++){
-                    individuals2.add(1);
+                    for(int i=0; i<totDom2; i++){
+                        individuals2.add(1);
+                    }
+        
+                    for(int i=0;i<totRec2;i++){
+                        individuals2.add(2);
+                    }
+                        
+                    randRecNum2=0;
+                    randDomNum2=0;
+                    valsSet2 = true;
+                    showPart22 = false;
                 }
-    
-                for(int i=0;i<totRec2;i++){
-                    individuals2.add(2);
+                addToArray = false;
+                if(usePop1==false && usePop2==false){
+                    noPopSelec = true;
                 }
-                      
-                randRecNum2=0;
-                randDomNum2=0;
-                valsSet2 = true;
-                showPart22 = false;
             }
+            
         } else if (e.getSource()==geneFlow){
+            addToArray = false;
             if(numOfPops==2){
-                if(Double.parseDouble(numFlow12.getText())>=0&&Double.parseDouble(numFlow12.getText())<1&&Double.parseDouble(numFlow21.getText())>=0&&Double.parseDouble(numFlow21.getText())<1){
-                    int numTransfer1 = (int)(Double.parseDouble(numFlow12.getText())*individuals.size());
-                    int numTransfer2 = (int)(Double.parseDouble(numFlow21.getText())*individuals2.size());
-                    while(numTransfer1>0&&numTransfer2>0){
-                        int randoNumber = (int)(Math.random()*individuals.size());
-                        int randoNumber2 = (int)(Math.random()*individuals2.size());
-                        individuals2.add(individuals.remove(randoNumber));
-                        individuals.add(individuals2.remove(randoNumber2));
-                        numTransfer1--;
-                        numTransfer2--;
-                    }
-                    if(numTransfer1>0){
-                        for(int i=0;i<numTransfer1;i++){
+                if(!numFlow12.getText().equals("") && !numFlow21.getText().equals("")){
+                    if(Double.parseDouble(numFlow12.getText())>=0&&Double.parseDouble(numFlow12.getText())<1&&Double.parseDouble(numFlow21.getText())>=0&&Double.parseDouble(numFlow21.getText())<1){
+                        int numTransfer1 = (int)(Double.parseDouble(numFlow12.getText())*individuals.size());
+                        int numTransfer2 = (int)(Double.parseDouble(numFlow21.getText())*individuals2.size());
+                        while(numTransfer1>0&&numTransfer2>0){
                             int randoNumber = (int)(Math.random()*individuals.size());
+                            int randoNumber2 = (int)(Math.random()*individuals2.size());
                             individuals2.add(individuals.remove(randoNumber));
+                            individuals.add(individuals2.remove(randoNumber2));
+                            numTransfer1--;
+                            numTransfer2--;
                         }
-                    } else if (numTransfer2>0){
-                        for(int i=0;i<numTransfer2;i++){
-                            int randoNumber = (int)(Math.random()*individuals2.size());
-                            individuals.add(individuals2.remove(randoNumber));
-                        }
-                    }  
-                    calculateVals();
-                    calculateVals2();
+                        if(numTransfer1>0){
+                            for(int i=0;i<numTransfer1;i++){
+                                int randoNumber = (int)(Math.random()*individuals.size());
+                                individuals2.add(individuals.remove(randoNumber));
+                            }
+                        } else if (numTransfer2>0){
+                            for(int i=0;i<numTransfer2;i++){
+                                int randoNumber = (int)(Math.random()*individuals2.size());
+                                individuals.add(individuals2.remove(randoNumber));
+                            }
+                        }  
+                        calculateVals();
+                        calculateVals2();
+                    } else{
+                        showBadEntryMessageGeneFlow = true;
+                    }   
                 } else{
-                    showBadEntryMessage = true;
-                }                  
+                    entryNullGeneFlow = true;
+                }              
             } else{
                 showNotEnoughPopsMessage = true;
             }
         }
         else if (e.getSource() == addPop){
-            if(numOfPops==0){
-                individuals.clear();
-                p = Double.parseDouble(enterP.getText());
-                q = (1-Double.parseDouble(enterP.getText()));
-                if(p<0||p>1){
-                    showBadEntryMessage = true;
-                } else{
-                    drawRect1 = true;
-                    popSize =  Integer.parseInt(enterPopSize.getText());
-                    totDom = (int)(p*popSize);
-                    totRec = (int)(q*popSize);
-                    //creating population of alleles
-                    for(int i=0; i<totDom;i++){
-                        individuals.add(1);
-                    }
-                    for(int i=0; i<totRec;i++){
-                        individuals.add(2);
-                    }
-                    //so that sampling will happen
-                    valsSet = true;
-                    showPart2 = false;
-                    numOfPops++;
-                    deletePop1.setVisible(true);
-                }
-                switchView.setVisible(true);
-                generation = 0;
-            } else if (numOfPops==1){
-                individuals2.clear();
-                p2 = Double.parseDouble(enterP.getText());
-                q2 =  (1-Double.parseDouble(enterP.getText()));
-                if(p2<0||p2>1){
-                    showBadEntryMessage = true;
-                } else{
-                    drawRect2 = true;
-                    popSize2 =  Integer.parseInt(enterPopSize.getText());
-                    //harvey weinburg equation
-                    totDom2 = (int)(p2*popSize2);
-                    totRec2 = (int)(q2 * popSize2);
-                    //creating population of alleles
-                    for(int i=0; i<totDom2;i++){
-                        individuals2.add(1);
-                    }
-                    for(int i=0; i<totRec2;i++){
-                        individuals2.add(2);
-                    }
-                    valsSet2 = true;
-                    showPart22 = false;
-                    showPart2 = false;
-                    numOfPops++;
-                    addPop.setVisible(false);
-                    deletePop2.setVisible(true);
-                }
-            } else{
-                addPop.setVisible(false);
+            if (enterPopSize.getText().equals("")){
+                wrongDataNullPop = true;
             }
+            else if (Integer.parseInt(enterPopSize.getText()) < 1){
+                wrongDataSizePop = true;
+            }
+            else{
+                if(numOfPops==0){
+                    if(enterP.getText().equals("")){
+                        wrongDataNullP = true;
+                    } else if(p<0||p>1){
+                        showBadEntryMessage = true;
+                    } else{
+                        individuals.clear();
+                        p = Double.parseDouble(enterP.getText());
+                        q = (1-Double.parseDouble(enterP.getText()));
+                        drawRect1 = true;
+                        popSize =  Integer.parseInt(enterPopSize.getText());
+                        totDom = (int)(p*popSize);
+                        totRec = (int)(q*popSize);
+                        //creating population of alleles
+                        for(int i=0; i<totDom;i++){
+                            individuals.add(1);
+                        }
+                        for(int i=0; i<totRec;i++){
+                            individuals.add(2);
+                        }
+                        //so that sampling will happen
+                        valsSet = true;
+                        showPart2 = false;
+                        numOfPops++;
+                        deletePop1.setVisible(true);
+                    }
+                    switchView.setVisible(true);
+                    generation = 0;
+                } else if (numOfPops==1){
+                    if(enterP.getText().equals("")){
+                        wrongDataNullP = true;
+                    } else if(p<0||p>1){
+                        showBadEntryMessage = true;
+                    }  else{
+                        individuals2.clear();
+                        p2 = Double.parseDouble(enterP.getText());
+                        q2 =  (1-Double.parseDouble(enterP.getText()));
+                        drawRect2 = true;
+                        popSize2 =  Integer.parseInt(enterPopSize.getText());
+                        //hardy weinburg equation
+                        totDom2 = (int)(p2*popSize2);
+                        totRec2 = (int)(q2 * popSize2);
+                        //creating population of alleles
+                        for(int i=0; i<totDom2;i++){
+                            individuals2.add(1);
+                        }
+                        for(int i=0; i<totRec2;i++){
+                            individuals2.add(2);
+                        }
+                        valsSet2 = true;
+                        showPart22 = false;
+                        showPart2 = false;
+                        numOfPops++;
+                        addPop.setVisible(false);
+                        deletePop2.setVisible(true);
+                    }
+                } else{
+                    addPop.setVisible(false);
+                }
+            }
+            
         } else if (e.getSource()==deletePop1){
             if(numOfPops==1){
                 for(int i=0;i<individuals.size();i++){
