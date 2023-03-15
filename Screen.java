@@ -433,11 +433,11 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 g.drawString("population 1:", 1150-115,300+20);
                 g.drawString("dominant allele: ",1150-115,320+20); 
                 g.setColor(new Color(32, 58, 89));
-                g.fillRect(1240-115,313+20,8,8);
+                g.fillRect(1240-103,313+20,8,8);
                 g.setColor(Color.black);
                 g.drawString("recessive allele: ",1150-115,340+20); 
                 g.setColor(new Color(207, 57, 50));
-                g.fillRect(1240-115,333+20,8,8);
+                g.fillRect(1240-103,333+20,8,8);
                 //graph
                 g.setColor(Color.black);
                 int yVal1 = (int)(200-(p*100*2)+372);
@@ -474,11 +474,11 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 g.drawString("population 2", 1150,320);
                 g.drawString("dominant allele: ",1150,340); 
                 g.setColor(new Color(176, 92, 237));
-                g.fillRect(1240,333,8,8);
+                g.fillRect(1252,333,8,8);
                 g.setColor(Color.black);
                 g.drawString("recessive allele: ",1150,360); 
                 g.setColor(new Color(141, 194, 124));
-                g.fillRect(1240,353,8,8);
+                g.fillRect(1252,353,8,8);
                 //graph
                 g.setColor(Color.black);
                 int yVal1 = (int)(200-(p2*100*2)+372);
@@ -517,11 +517,11 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 g.setColor(Color.black);
                 g.drawString("dominant allele: ",415,380); 
                 g.setColor(new Color(32, 58, 89));
-                g.fillRect(505,370,8,8);
+                g.fillRect(517,372,8,8);
                 g.setColor(Color.black);
                 g.drawString("recessive allele: ",415,400); 
                 g.setColor(new Color(207, 57, 50));
-                g.fillRect(505,390,8,8);
+                g.fillRect(517,392,8,8);
                 
                 int domPixelsTall = (int)(p*200);
                 int recPixelsTall = 200-domPixelsTall;
