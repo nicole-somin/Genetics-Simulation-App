@@ -17,8 +17,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.SwingConstants;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
+/*import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;*/
+import javax.swing.ImageIcon;
 
 public class Screen extends JPanel implements ActionListener, MouseListener{
     //ratio of dominant vs reccessive genes
@@ -112,6 +113,9 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     int[] recArray = new int[46];
     int[] domArray2 = new int[46];
     int[] recArray2 = new int[46];
+
+    ImageIcon img;
+
     public Screen(){
         setLayout(null);
         setFocusable(true);
@@ -234,6 +238,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         addPop.addActionListener(this);
 
         addMouseListener(this);
+        img = new ImageIcon("imageCon.png");
     }
 
 
@@ -543,7 +548,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
         if (graphView){
             //g.setFont(new Font("Arial",Font.PLAIN, 18));
-            Graphics2D g2d = (Graphics2D)g;
+            /*Graphics2D g2d = (Graphics2D)g;
             AffineTransform defaultAt = g2d.getTransform();
             AffineTransform at = new AffineTransform();
             at.rotate(-Math.PI/2);
@@ -555,7 +560,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             
             AffineTransform at2 = AffineTransform.getQuadrantRotateInstance(1);
             g2d.setTransform(at2);         
-            g2d.setTransform(defaultAt);
+            g2d.setTransform(defaultAt);*/
+            img.paintIcon(this, g, 280, 425); 
         }
 
     }
