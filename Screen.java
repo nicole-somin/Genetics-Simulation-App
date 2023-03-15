@@ -245,7 +245,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
     @Override
     public void paintComponent(Graphics g){
-        setLayout(null);
         super.paintComponent(g);
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, 1500, 650);
@@ -543,14 +542,16 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         }
 
         if (graphView){
-            g.setFont(new Font("Arial",Font.PLAIN, 18));
+            //g.setFont(new Font("Arial",Font.PLAIN, 18));
             Graphics2D g2d = (Graphics2D)g;
             AffineTransform defaultAt = g2d.getTransform();
             AffineTransform at = new AffineTransform();
-            at.rotate(- Math.PI / 2);
+            at.rotate(-Math.PI/2);
             g2d.setTransform(at);
             g.setColor(Color.black);
-            g2d.drawString("Allele Frequency", -785, 440);
+            //g2d.drawString("Allele Frequency", -785, 440);
+            g2d.drawString("Allele Frequency", -525, 300);
+            //System.out.println("test");
             
             AffineTransform at2 = AffineTransform.getQuadrantRotateInstance(1);
             g2d.setTransform(at2);         
