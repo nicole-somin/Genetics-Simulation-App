@@ -20,7 +20,6 @@ import javax.swing.SwingConstants;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
-
 public class Screen extends JPanel implements ActionListener, MouseListener{
     //ratio of dominant vs reccessive genes
     private double p;
