@@ -430,14 +430,14 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             if(drawRect1){
                 //key
                 g.setColor(Color.black);
-                g.drawString("population 1", 215,370);
-                g.drawString("dominant allele: ",215,380); 
+                g.drawString("population 1:", 1150-115,300+20);
+                g.drawString("dominant allele: ",1150-115,320+20); 
                 g.setColor(new Color(32, 58, 89));
-                g.fillRect(215,385,8,8);
+                g.fillRect(1240-115,313+20,8,8);
                 g.setColor(Color.black);
-                g.drawString("recessive allele: ",215,410); 
+                g.drawString("recessive allele: ",1150-115,340+20); 
                 g.setColor(new Color(207, 57, 50));
-                g.fillRect(215,415,8,8);
+                g.fillRect(1240-115,333+20,8,8);
                 //graph
                 g.setColor(Color.black);
                 int yVal1 = (int)(200-(p*100*2)+372);
@@ -471,14 +471,14 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                 }
             } if(drawRect2){
                 g.setColor(Color.black);
-                g.drawString("population 2", 215,550);
-                g.drawString("dominant allele: ",215,400+100+60); 
+                g.drawString("population 2", 1150,320);
+                g.drawString("dominant allele: ",1150,340); 
                 g.setColor(new Color(176, 92, 237));
-                g.fillRect(215,405+100+60,8,8);
+                g.fillRect(1240,333,8,8);
                 g.setColor(Color.black);
-                g.drawString("recessive allele: ",215,430+100+60); 
+                g.drawString("recessive allele: ",1150,360); 
                 g.setColor(new Color(141, 194, 124));
-                g.fillRect(215,435+100+60,8,8);
+                g.fillRect(1240,353,8,8);
                 //graph
                 g.setColor(Color.black);
                 int yVal1 = (int)(200-(p2*100*2)+372);
