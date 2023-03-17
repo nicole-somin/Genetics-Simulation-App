@@ -565,7 +565,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         }
 
     }
-    
+
     public void calculateVals(){
         ArrayList<Integer> tempArray = new ArrayList<Integer>();
         tempArray = individuals;
