@@ -238,7 +238,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         addPop.addActionListener(this);
 
         addMouseListener(this);
-        img = new ImageIcon("imageCon.png");
+        img = new ImageIcon(this.getClass().getResource("imageCon.png"));
     }
 
 
@@ -854,7 +854,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
                         noTypeSelec = true;
                     }
                     popSize2 = totDom2 + totRec2;
-
 
                     p2 = 1.0*totDom2/popSize2;
                     q2 = 1.0*totRec2/popSize2;
