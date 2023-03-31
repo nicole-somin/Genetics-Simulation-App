@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import javax.swing.SwingConstants;
 /*import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;*/
-import javax.swing.ImageIcon;
 
 public class Screen extends JPanel implements ActionListener, MouseListener{
     //ratio of dominant vs reccessive genes
@@ -113,8 +112,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
     int[] recArray = new int[46];
     int[] domArray2 = new int[46];
     int[] recArray2 = new int[46];
-
-    ImageIcon img;
 
     public Screen(){
         setLayout(null);
@@ -238,7 +235,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
         addPop.addActionListener(this);
 
         addMouseListener(this);
-        img = new ImageIcon(this.getClass().getResource("imageCon.png"));
     }
 
 
@@ -430,6 +426,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
 
 
             g.drawString("Generations",745,615);
+            g.drawString("Allele", 280,425);
+            g.drawString("Frequency", 262,445);
 
             if(drawRect1){
                 //key
@@ -560,8 +558,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener{
             
             AffineTransform at2 = AffineTransform.getQuadrantRotateInstance(1);
             g2d.setTransform(at2);         
-            g2d.setTransform(defaultAt);*/
-            img.paintIcon(this, g, 280, 425); 
+            g2d.setTransform(defaultAt);*/ 
         }
 
     }
